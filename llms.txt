@@ -13,3 +13,8 @@ What results mean: green = credentials present, hashes and signature verify, una
 - [C2PA View](https://c2paview.com/): the tool
 - [C2PA specification](https://c2pa.org/): the standard this reads
 - [c2pa-js](https://github.com/contentauth/c2pa-js): the library doing the validation
+
+## Related
+
+- [Adam's Arcade](https://games.adamwoodland.com/): all of the author's free browser games and tools
+- [Adam Woodland](https://adamwoodland.com/): the author, an OT/ICS cybersecurity consultant; this site is a side project
