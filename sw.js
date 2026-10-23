@@ -1,18 +1,19 @@
 // Service worker for c2paview.com (fleet pattern: network-first code, cache-first big assets).
 //
-//  - The WASM validator and SDK are precached, so the whole tool works offline.
+//  - The WASM validator and SDK (@contentauth/c2pa-web) are precached, so the whole tool works offline.
 //  - Bump CACHE on deploys that change any precached file.
 //  - Also receives Android share-sheet files (share_target POST /share): the shared file is
 //    parked in a one-shot cache and the client picks it up after redirect.
-const CACHE = 'cv-v11';
+const CACHE = 'cv-v12';
 const CORE = [
 	'/',
 	'/index.html',
 	'/styles.css',
 	'/app.js',
-	'/lib/c2pa.esm.min.js',
-	'/lib/c2pa.worker.min.js',
-	'/lib/toolkit_bg.wasm',
+	'/lib/c2pa-web.js',
+	'/lib/c2pa-web-core.js',
+	'/lib/highgain.js',
+	'/lib/c2pa_bg.wasm',
 	'/favicon.svg',
 	'/manifest.json',
 	'/samples/signed.jpg',

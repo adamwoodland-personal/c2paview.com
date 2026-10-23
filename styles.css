@@ -50,6 +50,7 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; }
 
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
 .card h2 { margin: 0 0 10px; font-size: 15px; }
+.card h2:not(:first-child) { margin-top: 16px; }
 .kv { display: grid; grid-template-columns: 150px 1fr; gap: 5px 14px; font-size: 14px; }
 .kv dt { color: var(--muted); }
 .kv dd { margin: 0; word-break: break-word; }
@@ -58,6 +59,12 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; }
 .ing-thumb { max-width: 44px; max-height: 44px; border-radius: 5px; vertical-align: middle; margin-right: 8px; border: 1px solid var(--line); }
 .ing-status { font-size: 12px; color: var(--muted); }
 .ing-status.bad { color: var(--bad); }
+.identity { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.id-status { margin: 8px 0 0; font-size: 13.5px; font-weight: 600; }
+.id-status.good { color: var(--good); }
+.id-status.warn { color: var(--warn); }
+.id-status.bad { color: var(--bad); }
+.id-status code { font-weight: 400; opacity: 0.85; }
 
 .remove-note { color: var(--muted); font-size: 13px; margin: 2px 0 10px; }
 #rawWrap { margin-top: 10px; }

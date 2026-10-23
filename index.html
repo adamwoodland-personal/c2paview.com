@@ -66,6 +66,14 @@
     },
     {
       "@type": "Question",
+      "name": "What does 'Who vouches for it' mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Some files also carry an identity assertion, defined by the Creator Assertions Working Group (CAWG): a named person or organisation signs to vouch for parts of the manifest, such as the content or the AI training preferences, either with an identity certificate or through an identity provider that has verified their accounts. This page shows who is named and what they vouch for, and checks the claim's signature separately from the file's own verdict. No trust list for identity credentials is set up here, so the person or organisation named is always shown as unconfirmed, never as verified."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Why does my file have no Content Credentials?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -147,7 +155,7 @@
     <div id="banner"></div>
     <div id="manifest"></div>
     <details id="rawWrap" hidden>
-      <summary>Raw manifest store (JSON)</summary>
+      <summary>Raw manifest store (JSON; hash bytes shown as hex)</summary>
       <pre id="raw"></pre>
     </details>
   </section>
@@ -165,6 +173,10 @@
     <div class="explain-card">
       <h2>What does a green result prove?</h2>
       <p>That the file carries Content Credentials, the cryptographic checks pass, the file has not been modified since signing, and the signer's certificate chains to the published C2PA trust lists. If the file is intact but the signer is not on those lists, an amber result says so - the identity of the signer can't be verified. A red result means the file was changed after signing.</p>
+    </div>
+    <div class="explain-card">
+      <h2>What does 'Who vouches for it' mean?</h2>
+      <p>Some files also carry an identity assertion, defined by the Creator Assertions Working Group (CAWG): a named person or organisation signs to vouch for parts of the manifest, such as the content or the AI training preferences, either with an identity certificate or through an identity provider that has verified their accounts. This page shows who is named and what they vouch for, and checks the claim's signature separately from the file's own verdict. No trust list for identity credentials is set up here, so the person or organisation named is always shown as unconfirmed, never as verified.</p>
     </div>
     <div class="explain-card">
       <h2>Why does my file have no Content Credentials?</h2>
@@ -194,8 +206,8 @@
 </main>
 
 <footer class="notes">
-  <p class="note">Built on <a href="https://github.com/contentauth/c2pa-js">c2pa-js</a> (MIT/Apache-2.0) from the
-    Content Authenticity Initiative · <a href="https://c2pa.org/">C2PA specification</a> · Not affiliated with or endorsed by the C2PA or the Content Authenticity Initiative; C2PA™ and Content Credentials are trademarks of their respective owners, used here only to describe the standard ·
+  <p class="note">Built on <a href="https://github.com/contentauth/c2pa-js">c2pa-web</a> (MIT) and the C2PA Rust library
+    <a href="https://github.com/contentauth/c2pa-rs">c2pa-rs</a> (MIT/Apache-2.0) from the Content Authenticity Initiative · <a href="https://c2pa.org/">C2PA specification</a> · Not affiliated with or endorsed by the C2PA or the Content Authenticity Initiative; C2PA™ and Content Credentials are trademarks of their respective owners, used here only to describe the standard ·
     Free, open source (<a href="LICENSE">MIT</a>) · Questions or corrections:
     <a href="mailto:adam@c2paview.com">adam@c2paview.com</a></p>
   <p class="note">Want this in a tab in Windows Explorer's file properties? See
