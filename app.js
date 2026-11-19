@@ -29,7 +29,7 @@ const trustReady = (async () => {
 // Settings are resolved once per Context. Remote manifests are never fetched (c2pa-rs would by
 // default, following a URL inside the file): this viewer reads only what is embedded, and the
 // privacy promise must not depend on the CSP blocking the request. Without the lists, trust
-// checking is switched off explicitly, so an intact file reads as valid (with a note).
+// checking is switched off explicitly, so an intact file reads amber: intact, signer not checked.
 const contextReady = trustReady.then((s) => new Context(s || { verify: { verifyTrust: false, remoteManifestFetch: false } }));
 
 // The SDK wants the format; browsers leave file.type empty for some types (and always for .c2pa).
@@ -98,6 +98,19 @@ const CODE_HINTS = {
   'timeStamp.mismatch': 'the trusted timestamp does not match',
   'general.error': 'the manifest could not be read',
 };
+// What kind of check failed, so a red result says which: only a content hash mismatch means the file
+// itself changed; a bad signature or manifest, or a signer problem, says nothing about edits.
+function failureKinds(list) {
+  const kinds = new Set(list.map((s) => (/^assertion\.[a-zA-Z]*Hash\.mismatch$/.test(s.code) ? 'content'
+    : s.code === 'signingCredential.untrusted' ? 'untrusted'
+    : /^(signingCredential|timeStamp)\./.test(s.code) ? 'signer' : 'credentials')));
+  return [
+    kinds.has('content') && 'the file was changed (or damaged) after signing',
+    kinds.has('credentials') && 'the credentials themselves (signature or manifest) don’t check out, so they can’t be relied on',
+    kinds.has('signer') && 'the signer’s certificate or timestamp failed its checks',
+    kinds.has('untrusted') && 'the signer is not on the C2PA trust lists',
+  ].filter(Boolean).join('; ');
+}
 
 // The schema.org author marked as a Person, as the old SDK's selectProducer() did.
 function producerOf(manifest) {
@@ -353,7 +366,7 @@ function showResult(file, report) {
     prev.hidden = false;
   } else prev.hidden = true;
 
-  const banner = $('#banner');
+  const banner = $('#verdict');
   banner.replaceChildren();
   const manifestEl = $('#manifest');
   manifestEl.replaceChildren();
@@ -361,14 +374,14 @@ function showResult(file, report) {
   rawWrap.hidden = true;
 
   if (report.error) {
-    const b = elc('div', 'banner warn', `Could not read this file: ${report.error}`);
+    const b = elc('div', 'verdict-msg warn', `Could not read this file: ${report.error}`);
     banner.appendChild(b);
     return;
   }
   const store = report.store;
   const active = store && store.active_manifest && store.manifests && store.manifests[store.active_manifest];
   if (!active) {
-    banner.appendChild(elc('div', 'banner warn', 'No Content Credentials found in this file - it carries no provenance information either way.'));
+    banner.appendChild(elc('div', 'verdict-msg warn', 'No Content Credentials found in this file - it carries no provenance information either way.'));
     postMortem(file, banner);
     return;
   }
@@ -385,6 +398,7 @@ function showResult(file, report) {
   const unbound = sidecar ? status.filter((s) => /^assertion\.[a-zA-Z]*Hash\.mismatch$/.test(s.code)) : [];
   if (sidecar) status = status.filter((s) => !unbound.includes(s));
   const intact = sidecar ? 'the manifest is intact and validly signed' : 'the file has not been changed since it was signed';
+  const Intact = intact[0].toUpperCase() + intact.slice(1);
   const untrustedOnly = status.length > 0 && status.every((s) => s.code === 'signingCredential.untrusted');
   // Green needs positive evidence, not only an absence of failures: the active manifest's signature
   // validated and, with the trust lists loaded, its signer reported trusted with an overall Trusted
@@ -396,9 +410,9 @@ function showResult(file, report) {
   const cawgHard = results.failure.some((s) => /^cawg\./.test(s.code) && !/\.untrusted$/.test(s.code));
   const unexplained = state === 'Invalid' && !status.some((s) => s.code !== 'signingCredential.untrusted') && !unbound.length && !cawgHard;
   if (unexplained || (status.length && !untrustedOnly)) {
-    const b = elc('div', 'banner bad', unexplained
+    const b = elc('div', 'verdict-msg bad', unexplained
       ? '✗ Content Credentials are present but validation FAILED: the validator reports the manifest as invalid without naming a specific check.'
-      : '✗ Content Credentials are present but validation FAILED:');
+      : `✗ Content Credentials are present but validation FAILED: ${failureKinds(status)}.`);
     const ul = elc('ul');
     for (const s of status.filter((x) => !unexplained || x.code !== 'signingCredential.untrusted')) {
       const li = elc('li');
@@ -426,19 +440,20 @@ function showResult(file, report) {
       }
     }
     banner.appendChild(b);
-  } else if (!status.length && signedOk && (!trustEnabled || trusted)) {
-    banner.appendChild(elc('div', 'banner good', trustEnabled
-      ? `✓ Content Credentials are present and valid - ${intact}, and the signer is on the C2PA trust lists.`
-      : `✓ Content Credentials are present and valid - ${intact}. (Trust lists unavailable offline: signer identity not checked.)`));
+  } else if (!status.length && signedOk && trustEnabled && trusted) {
+    banner.appendChild(elc('div', 'verdict-msg good', `✓ Content Credentials are present and valid - ${intact}, and the signer is on the C2PA trust lists.`));
+  } else if (!status.length && signedOk && !trustEnabled) {
+    // Green means the signer is trusted; without the lists that was never checked, so amber.
+    banner.appendChild(elc('div', 'verdict-msg warn', `✓ ${Intact} - but the trust lists could not be loaded, so the signer was not checked against them and can’t be verified. Judge the issuer name below as you would an unknown email sender.`));
   } else if (untrustedOnly && signedOk) {
-    const b = elc('div', 'banner warn', `✓ ${intact[0].toUpperCase()}${intact.slice(1)} - but the signer is not on the C2PA trust lists, so the identity of the signer can\u2019t be verified. Judge the issuer name below as you would an unknown email sender.`);
+    const b = elc('div', 'verdict-msg warn', `✓ ${Intact} - but the signer is not on the C2PA trust lists, so the identity of the signer can\u2019t be verified. Judge the issuer name below as you would an unknown email sender.`);
     banner.appendChild(b);
   } else {
     // No failure named, but not enough positive evidence for either message above: fail closed.
-    banner.appendChild(elc('div', 'banner warn', `Content Credentials are present, but the checks didn’t all come back conclusive (validation state: ${state || 'not reported'}), so neither the file’s integrity nor its signer can be confirmed. Treat the details below with care.`));
+    banner.appendChild(elc('div', 'verdict-msg warn', `Content Credentials are present, but the checks didn’t all come back conclusive (validation state: ${state || 'not reported'}), so neither the file’s integrity nor its signer can be confirmed. Treat the details below with care.`));
   }
   if (sidecar) {
-    banner.appendChild(elc('div', 'banner none', 'This is a detached manifest (a .c2pa sidecar file). Its signature and contents are checked, but not that it belongs to a particular image or video: that needs the original file, which carries the content the manifest’s hash covers.'));
+    banner.appendChild(elc('div', 'verdict-msg none', 'This is a detached manifest (a .c2pa sidecar file). Its signature and contents are checked, but not that it belongs to a particular image or video: that needs the original file, which carries the content the manifest’s hash covers.'));
   }
 
   const count = Object.keys(store.manifests || {}).length;
@@ -450,28 +465,31 @@ function showResult(file, report) {
 }
 
 // ------------------------------------------------------------------ stripping post-mortem
-// When a file has no credentials, look for the debris a metadata stripper leaves behind:
-// XMP provenance pointers and JUMBF fragments survive many pipelines that drop the manifest.
+// When a file has no credentials, look for leftovers a metadata stripper can leave behind: XMP
+// provenance pointers and JUMBF fragments survive some pipelines that drop the manifest. These are
+// plain byte matches in the first 64 MB, so they are shown as clues, never as proof either way.
 async function postMortem(file, banner) {
   let text;
+  const cap = Math.min(file.size, 64 * 1048576);
   try {
-    const cap = Math.min(file.size, 64 * 1048576);
     text = new TextDecoder('latin1').decode(new Uint8Array(await file.slice(0, cap).arrayBuffer()));
   } catch (e) { return; }
   const traces = [];
-  if (text.includes('dcterms:provenance')) traces.push('The file\u2019s XMP metadata still contains a dcterms:provenance pointer to a C2PA manifest that is no longer in the file.');
-  if (/https?:\/\/[^"'<>\s]{4,200}\.c2pa/.test(text)) traces.push('The metadata references a remote .c2pa manifest URL - the credentials may live there rather than in the file (this viewer only reads embedded manifests).');
-  if (text.includes('contentauth:urn:uuid') || text.includes('c2pa_manifest')) traces.push('Fragments of a C2PA manifest identifier remain in the file.');
-  if (/jumb.{0,32}c2pa/s.test(text)) traces.push('A leftover JUMBF/C2PA fragment is present but not readable as a manifest - it was probably truncated by an editor or converter.');
-  const wrap = elc('div', 'banner ' + (traces.length ? 'warn' : 'none'));
+  if (text.includes('dcterms:provenance')) traces.push('The text "dcterms:provenance" appears. XMP metadata uses it to point to a C2PA manifest, and none could be read from this file.');
+  if (/https?:\/\/[^"'<>\s]{4,200}\.c2pa/.test(text)) traces.push('A web address ending in .c2pa appears. Credentials may be stored there rather than in the file (this viewer only reads embedded manifests).');
+  if (text.includes('contentauth:urn:uuid') || text.includes('c2pa_manifest')) traces.push('Text that looks like a C2PA manifest identifier appears.');
+  // A C2PA manifest store box header (jumb, then a jumd box whose type starts "c2pa"), not just the
+  // two words near each other: XMP's own "self#jumbf=/c2pa/..." pointer matched that looser test.
+  if (/jumb.{4}jumdc2pa/s.test(text)) traces.push('Bytes that look like a JUMBF/C2PA block appear, but no readable manifest. One may have been cut short by an editor or converter.');
+  const wrap = elc('div', 'verdict-msg none');
   if (traces.length) {
-    wrap.appendChild(document.createTextNode('But there is debris: this file very likely HAD Content Credentials that were stripped along the way.'));
+    wrap.appendChild(document.createTextNode('Possible traces of earlier credentials (clues, not proof):'));
     const ul = elc('ul');
     for (const t of traces) ul.appendChild(elc('li', '', t));
     wrap.appendChild(ul);
-    wrap.appendChild(elc('div', '', 'Common culprits: image compressors, CMS/social-media uploads, screenshots, format conversion and "save for web" exports - most discard metadata by default.'));
+    wrap.appendChild(elc('div', '', 'These are simple byte matches: they can also turn up by chance, or in a file that only mentions C2PA. If credentials were removed, common culprits are image compressors, CMS/social-media uploads, screenshots, format conversion and "save for web" exports.'));
   } else {
-    wrap.appendChild(document.createTextNode('No traces of stripped credentials either. If this file once carried them, the removal was clean - re-encoding, screenshots and most upload pipelines leave nothing behind.'));
+    wrap.appendChild(document.createTextNode(`A simple byte search${file.size > cap ? ' of the first 64 MB' : ''} found no traces of earlier credentials either. That doesn\u2019t show the file never had any: re-encoding, screenshots and most upload pipelines remove them without a trace.`));
   }
   banner.appendChild(wrap);
 }
@@ -484,7 +502,7 @@ const release = (r) => { try { Promise.resolve(r && r.free()).catch(() => {}); }
 async function inspect(file) {
   const mine = ++seq;
   $('#result').hidden = false;
-  $('#banner').replaceChildren(elc('div', 'banner none', 'Reading…'));
+  $('#verdict').replaceChildren(elc('div', 'verdict-msg none', 'Reading…'));
   $('#manifest').replaceChildren();
   if (current) {
     for (const u of current.urls) URL.revokeObjectURL(u);
@@ -540,21 +558,39 @@ if ('launchQueue' in window) {
     if (params.files && params.files.length) inspect(await params.files[0].getFile());
   });
 }
-// Android share sheet: the service worker parked the shared file in a one-shot cache.
-if (new URLSearchParams(location.search).get('shared')) {
-  (async () => {
-    try {
-      const c = await caches.open('share-inbox');
-      const res = await c.match('/shared-file');
-      if (!res) return;
-      await c.delete('/shared-file');
-      const name = decodeURIComponent(res.headers.get('X-File-Name') || 'shared-file');
-      const blob = await res.blob();
-      inspect(new File([blob], name, { type: blob.type }));
-      history.replaceState(null, '', '/');
-    } catch (e) { /* ignore */ }
-  })();
-}
+// Android share sheet: the service worker parked the shared file under a one-time id (see sw.js).
+// First delete every expired entry: older than INBOX_TTL (same value as in sw.js), or with no time
+// at all (the old single key). That includes this page's own, so a late pickup can't open an expired
+// file. Then take this page's file, if still there, and delete it at once.
+const INBOX = 'share-inbox', INBOX_TTL = 5 * 60 * 1000;
+const inboxNotice = (text) => { $('#result').hidden = false; $('#verdict').replaceChildren(elc('div', 'verdict-msg warn', text)); };
+(async () => {
+  const shared = new URLSearchParams(location.search).get('shared');
+  if (shared !== null) history.replaceState(null, '', '/');
+  let file = null;
+  try {
+    if ('caches' in window && await caches.has(INBOX)) {
+      const c = await caches.open(INBOX);
+      for (const req of await c.keys()) {
+        const res = await c.match(req);
+        const age = Date.now() - Number(res && res.headers.get('X-Shared-At'));
+        if (!(age >= 0 && age < INBOX_TTL)) await c.delete(req);
+      }
+      if (/^[0-9a-f]{32}$/.test(shared || '')) {
+        const key = `/inbox/${shared}`, res = await c.match(key);
+        try {
+          if (res) {
+            const blob = await res.blob();
+            file = new File([blob], decodeURIComponent(res.headers.get('X-File-Name') || 'shared-file'), { type: blob.type });
+          }
+        } finally { await c.delete(key); }
+      }
+    }
+  } catch (e) { /* storage unavailable */ }
+  if (file) inspect(file);
+  else if (shared === 'too-large') inboxNotice('Could not read the shared file: it is larger than 1 GB, the most this viewer can read.');
+  else if (shared) inboxNotice('The shared file could not be opened here. Try sharing it again, or choose it above.');
+})();
 
 // Test hook (ReferenceFiles/c2paview-sdk-ab/): showResult takes a synthetic store to exercise the verdict logic.
 window.__C2PA = { inspect, ready: c2paReady, showResult };

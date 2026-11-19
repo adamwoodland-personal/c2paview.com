@@ -21,8 +21,11 @@ Free, runs entirely in your browser, no account, no adverts, and the file is nev
 - Explains failures: each C2PA validation code (for example `assertion.dataHash.mismatch`) comes
   with a plain-English line saying what it means.
 
-A green result proves integrity (unchanged since signing), not identity - the issuer name is
-shown so you can judge it yourself. The bundled sample is `CA.jpg` from the
+A green result means the file is unchanged since signing and its signer's certificate is on the
+C2PA trust lists. If the signer is not on them, or the lists could not be loaded, the result is
+amber and the issuer name is shown so you can judge it yourself. A red result says what failed:
+the content (changed since signing), the credentials themselves, or the signer's certificate.
+The bundled sample is `CA.jpg` from the
 [c2pa-rs test fixtures](https://github.com/contentauth/c2pa-rs), signed with the C2PA test
 certificate.
 
@@ -30,6 +33,11 @@ certificate.
 
 No backend, no cookies, no analytics, no uploads. The WASM validator runs in a worker in your
 tab; load the page, go offline, and it still works.
+
+A file shared to the installed app from Android's share sheet waits in the browser's cache on your
+device until the page opens it, and is deleted as soon as it is read. The page won't open one more
+than 5 minutes old. If the handoff is interrupted, the file stays in that cache until the next
+visit, share or app update after those 5 minutes clears it. Nothing deletes it on a timer.
 
 ## Licence
 

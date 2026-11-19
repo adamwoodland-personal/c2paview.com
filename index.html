@@ -61,7 +61,7 @@
       "name": "What does a green result prove?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "That the file carries Content Credentials, the cryptographic checks pass, the file has not been modified since signing, and the signer's certificate chains to the published C2PA trust lists. If the file is intact but the signer is not on those lists, an amber result says so - the identity of the signer can't be verified. A red result means the file was changed after signing."
+        "text": "That the file carries Content Credentials, the cryptographic checks pass, the file has not been modified since signing, and the signer's certificate chains to the published C2PA trust lists. If the file is intact but the signer is not on those lists, or the lists could not be loaded, an amber result says so - the identity of the signer can't be verified. A red result means a check failed, and it says which: content that no longer matches means the file was changed after signing, while a bad signature, certificate or manifest means the credentials can't be relied on, which by itself doesn't show the file was edited."
       }
     },
     {
@@ -152,7 +152,7 @@
         <p class="file-meta" id="fileMeta"></p>
       </div>
     </div>
-    <div id="banner"></div>
+    <div id="verdict"></div>
     <div id="manifest"></div>
     <details id="rawWrap" hidden>
       <summary>Raw manifest store (JSON; hash bytes shown as hex)</summary>
@@ -172,7 +172,7 @@
     </div>
     <div class="explain-card">
       <h2>What does a green result prove?</h2>
-      <p>That the file carries Content Credentials, the cryptographic checks pass, the file has not been modified since signing, and the signer's certificate chains to the published C2PA trust lists. If the file is intact but the signer is not on those lists, an amber result says so - the identity of the signer can't be verified. A red result means the file was changed after signing.</p>
+      <p>That the file carries Content Credentials, the cryptographic checks pass, the file has not been modified since signing, and the signer's certificate chains to the published C2PA trust lists. If the file is intact but the signer is not on those lists, or the lists could not be loaded, an amber result says so - the identity of the signer can't be verified. A red result means a check failed, and it says which: content that no longer matches means the file was changed after signing, while a bad signature, certificate or manifest means the credentials can't be relied on, which by itself doesn't show the file was edited.</p>
     </div>
     <div class="explain-card">
       <h2>What does 'Who vouches for it' mean?</h2>
