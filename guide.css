@@ -1,0 +1,67 @@
+/* c2paview.com guide pages and the 404 page (added 2026-11-22, SEO batches 2-4). Loaded after styles.css, whose
+   colours, header and footer they share; the tool's own script and validator are not loaded on these pages. */
+.brand a { color: inherit; text-decoration: none; }
+.brand a:hover .brand-hl, .brand a:focus-visible .brand-hl { text-decoration: underline; }
+
+.guide { max-width: 780px; }
+.crumbs { margin: 0 0 6px; font-size: 13px; color: var(--muted); }
+.crumbs a { display: inline-block; padding: 4px 0; }
+.guide h1 { margin: 4px 0 10px; font-size: 28px; line-height: 1.25; }
+.guide h2 { margin: 30px 0 10px; font-size: 20px; line-height: 1.3; scroll-margin-top: 12px; }
+.guide h3 { margin: 22px 0 8px; font-size: 16px; line-height: 1.35; scroll-margin-top: 12px; }
+.guide p, .guide li { color: var(--ink); }
+.guide p { margin: 0 0 12px; }
+.guide ol, .guide ul { margin: 0 0 14px; padding-left: 22px; }
+.guide li { margin: 6px 0; }
+.guide .lead { font-size: 17px; line-height: 1.55; color: var(--ink); }
+.guide .updated { color: var(--muted); font-size: 13px; margin-top: -4px; }
+.guide .cta { display: inline-block; margin: 4px 0 14px; padding: 10px 16px; border-radius: 10px; background: var(--accent);
+  color: #0d1117; font-weight: 700; text-decoration: none; }
+.guide .cta:hover, .guide .cta:focus-visible { background: #79b8ff; }
+.guide code { background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
+
+.guide .note-box { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--warn);
+  border-radius: 10px; padding: 12px 14px; margin: 0 0 16px; }
+.guide .note-box p:last-child { margin-bottom: 0; }
+
+.table-wrap { overflow-x: auto; margin: 0 0 18px; border: 1px solid var(--line); border-radius: 10px; }
+.guide table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.guide th, .guide td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+.guide thead th { background: var(--panel); color: var(--muted); font-weight: 600; white-space: nowrap; }
+.guide tbody tr:last-child th, .guide tbody tr:last-child td { border-bottom: 0; }
+.guide tbody th { font-weight: 600; }
+.guide tbody tr:target { background: #10233d; }
+.codes td:first-child { white-space: nowrap; }
+.codes code { white-space: nowrap; }
+.codes .cat { white-space: nowrap; }
+/* phones: each code row stacks (code, then kind and the other cells, then the meaning) instead of scrolling sideways */
+@media (max-width: 600px) {
+  .guide table.codes thead { display: none; }
+  .guide table.codes, .guide table.codes tbody, .guide table.codes tr { display: block; }
+  .guide table.codes tr { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .guide table.codes tbody tr:last-child { border-bottom: 0; }
+  .guide table.codes td { display: block; padding: 2px 0; border: 0; white-space: normal; }
+  .guide table.codes td:first-child { white-space: normal; }
+  .guide table.codes td:first-child code { white-space: normal; word-break: break-all; }
+  .guide table.codes td.cat { font-size: 13px; }
+  .guide table.codes td[data-label]::before { content: attr(data-label) ": "; color: var(--muted); }
+}
+.cat.good { color: var(--good); }
+.cat.warn { color: var(--warn); }
+.cat.bad { color: var(--bad); }
+
+.guide figure { margin: 6px 0 20px; }
+.guide figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; }
+.guide figcaption { margin-top: 8px; color: var(--muted); font-size: 13px; }
+
+.guide .faq h3 { margin-top: 18px; }
+.src-list li { margin: 8px 0; font-size: 14px; }
+.src-list a { display: inline-block; padding: 3px 0; }
+.related { margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); }
+.related a { display: inline-block; padding: 3px 0; }
+
+.notfound { text-align: center; padding: 30px 0 10px; }
+.notfound h1 { font-size: 26px; margin: 0 0 10px; }
+.notfound ul { list-style: none; padding: 0; margin: 16px 0 0; }
+.notfound li { margin: 8px 0; }
+.notfound li a { display: inline-block; padding: 4px 0; }

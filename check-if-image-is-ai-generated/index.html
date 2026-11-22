@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How to check if an image is AI-generated: C2PA and SynthID</title>
+  <meta name="description" content="How to check whether an image was made with AI: read its Content Credentials, look for a SynthID watermark, and why a missing label proves nothing." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://c2paview.com/check-if-image-is-ai-generated/" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/guide.css" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0d1117" />
+
+  <meta property="og:type"         content="article" />
+  <meta property="og:site_name"    content="c2paview" />
+  <meta property="og:url"          content="https://c2paview.com/check-if-image-is-ai-generated/" />
+  <meta property="og:title"        content="Is this image AI-generated? How to check" />
+  <meta property="og:description"  content="Content Credentials and SynthID: what ChatGPT, Gemini and other AI tools add to their images, how to check them, and why a missing label proves nothing." />
+  <meta property="og:image"        content="https://c2paview.com/og-ai-image-check.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="Is this image AI-generated? A c2paview result for a ChatGPT image: Content Credentials valid, created with DALL·E, fully AI-generated" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Is this image AI-generated? How to check" />
+  <meta name="twitter:description" content="Content Credentials and SynthID: what AI tools add to their images, how to check them, and why a missing label proves nothing." />
+  <meta name="twitter:image"       content="https://c2paview.com/og-ai-image-check.png" />
+  <meta name="twitter:image:alt"   content="Is this image AI-generated? A c2paview result for a ChatGPT image: Content Credentials valid, created with DALL·E, fully AI-generated" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "Is this image AI-generated? How to check",
+        "description": "How to check whether an image was made with AI: read its Content Credentials, look for a SynthID watermark, and why a missing label proves nothing.",
+        "url": "https://c2paview.com/check-if-image-is-ai-generated/",
+        "mainEntityOfPage": "https://c2paview.com/check-if-image-is-ai-generated/",
+        "image": ["https://c2paview.com/og-ai-image-check.png", "https://c2paview.com/img/chatgpt-image-content-credentials.png"],
+        "datePublished": "2026-11-22",
+        "dateModified": "2026-11-22",
+        "inLanguage": "en",
+        "isPartOf": { "@type": "WebSite", "name": "c2paview", "url": "https://c2paview.com/" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "c2paview", "item": "https://c2paview.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Is this image AI-generated?", "item": "https://c2paview.com/check-if-image-is-ai-generated/" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can I tell if a screenshot of an image is AI-generated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually not from its Content Credentials: a screenshot is a new file, without the original's record. A SynthID watermark can survive where metadata does not, so Google's SynthID Detector at synthid.com, or the maker's own checker (the Gemini app for Google, openai.com/verify for OpenAI), may still find it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does a green result mean the image is real?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Green means the Content Credentials are intact, the file has not changed since it was signed, and the signer is on the C2PA trust list or the older interim trust list. If the signer is an AI tool and the record says the image was generated, a green result confirms exactly that."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can someone remove the AI label?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Content Credentials are metadata and can be stripped, which is why their absence proves nothing. They cannot be altered without detection: any change to a signed record or to the content it covers shows as a failed check."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my image uploaded when I check it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. c2paview runs the Content Authenticity Initiative's open-source C2PA library (c2pa-rs) in your browser, and the file never leaves your device."
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+<header class="top">
+  <p class="brand"><a href="/">c2pa<span class="brand-hl">view</span></a></p>
+</header>
+
+<main class="layout guide">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">c2paview</a> › Is this image AI-generated?</nav>
+  <article>
+    <h1>Is this image AI-generated? How to check</h1>
+    <p class="lead">Many AI tools now mark the images they make, most often in two ways: Content Credentials (C2PA), a signed record
+      stored in the file, and SynthID, an invisible watermark. If either mark survived, you can check it in a minute. If neither did, these checks tell you nothing either way.</p>
+    <p class="updated">Updated 22 November 2026</p>
+    <a class="cta" href="/">Check a file now</a>
+
+    <h2 id="quick-check">The quick check</h2>
+    <ol>
+      <li><strong>Find the original file.</strong> A screenshot, or a copy saved from social media, may have lost its credentials. Ask the sender for the file itself, or download it from where it was first published.</li>
+      <li><strong>Drop it into c2paview.</strong> <a href="/">Open the viewer</a>: the file is read in your browser and never uploaded.</li>
+      <li><strong>Read "What was done".</strong> An AI tool that signs its output records how the image was made.
+        c2paview marks those entries "fully AI-generated", or "partly AI-generated" when the record says AI edited an existing image, and names who signed the file, such as OpenAI or Microsoft Corporation.</li>
+      <li><strong>No credentials? Look for a watermark.</strong> Google's SynthID Detector at synthid.com checks images,
+        video and audio for SynthID watermarks from Google's AI and from partners including OpenAI. The Gemini app also
+        checks for Google's, and openai.com/verify for OpenAI's.</li>
+    </ol>
+
+    <h2 id="examples">What a real result looks like</h2>
+    <figure>
+      <img src="/img/chatgpt-image-content-credentials.png" width="756" height="948" loading="lazy"
+        alt="c2paview result for a ChatGPT image: Content Credentials valid and signed by OpenAI; its DALL·E ingredient says Created - DALL·E, fully AI-generated, then a format conversion" />
+      <figcaption>An illustration made with DALL·E in ChatGPT in September 2024 (from
+        <a href="https://commons.wikimedia.org/wiki/File:A_human_writer_and_a_creature_with_the_head_and_wings_of_a_crow,_both_sitting_and_typing_on_their_own_laptops,_experiencing_mild_hallucinations_(DALL-E_illustration).webp">Wikimedia Commons</a>,
+        public domain). OpenAI signed it twice: the DALL·E ingredient records "Created - DALL·E · fully AI-generated" and a format conversion, and ChatGPT's own manifest sits on top of it.</figcaption>
+    </figure>
+    <figure>
+      <img src="/img/microsoft-designer-image-content-credentials.png" width="756" height="492" loading="lazy"
+        alt="c2paview result for an image from Microsoft Designer: Content Credentials valid, signed by Microsoft Corporation, created with Image Creator from Designer, fully AI-generated" />
+      <figcaption>An image made with Image Creator in Microsoft Designer in June 2024 (from
+        <a href="https://commons.wikimedia.org/wiki/File:AI_tanuki_Japanese_text.jpg">Wikimedia Commons</a>, public
+        domain), signed by Microsoft Corporation and marked fully AI-generated.</figcaption>
+    </figure>
+
+    <h2 id="content-credentials">What Content Credentials can tell you</h2>
+    <p>Content Credentials are the C2PA standard's signed record of a file's history (more:
+      <a href="/what-is-c2pa/">what C2PA is</a>). When an AI tool adds them, the record can show:</p>
+    <ul>
+      <li><strong>Who signed it</strong>, from the signer's certificate, and whether that signer is on the C2PA trust list or the older interim trust list.</li>
+      <li><strong>When</strong> it was signed, and <strong>which app</strong> made the record.</li>
+      <li><strong>What was done</strong>: created, edited, converted. The AI marking is a "digital source type" from the
+        IPTC's vocabulary. <code>trainedAlgorithmicMedia</code> ("Created using Generative AI") means the whole image was
+        generated, and <code>compositeWithTrainedAlgorithmicMedia</code> ("Edited using Generative AI") covers
+        "augmentation, correction or enhancement using a Generative AI model, such as with inpainting or outpainting".</li>
+      <li><strong>What it was made from</strong>: earlier files, each with its own record if it had one.</li>
+      <li><strong>Whether the file changed since</strong>: the signature covers the content, so any later change to the content it covers shows as a failed check.</li>
+    </ul>
+    <p>What it cannot tell you is whether the picture is true. The record shows what the signer declared and, when the signer is on a trust list, who they are; nothing more.</p>
+
+    <h2 id="chatgpt">Does ChatGPT add a watermark to images?</h2>
+    <p>Yes: an invisible SynthID watermark, plus Content Credentials, which are signed metadata rather than a watermark. OpenAI's help centre says "images generated with ChatGPT or the OpenAI API include both
+      signals": C2PA Content Credentials and a SynthID watermark. SynthID came later: OpenAI added it on 19 May 2026,
+      "starting with images generated through ChatGPT, Codex, or the OpenAI API", so older ChatGPT images such as the one
+      above carry Content Credentials only. OpenAI also warns that "coverage may vary by product, model, export path,
+      file type, and when the content was created".</p>
+    <p>To check: c2paview reads the Content Credentials. OpenAI's own openai.com/verify checks a supported image for
+      both signals, and Google's SynthID Detector also recognises OpenAI's watermark.</p>
+
+    <h2 id="gemini">Does Gemini mark its images?</h2>
+    <p>Google marks images made or edited with its AI with SynthID, and since 20 November 2025 you can
+      "verify if an image was generated with or edited by Google AI right in the Gemini app": upload the image and ask.
+      In the same post Google said that, "rolling out this week", images generated by Nano Banana Pro (Gemini 3 Pro Image) in the Gemini app, Vertex AI and Google Ads would carry C2PA metadata, which c2paview can read.</p>
+    <p>Since May 2026 the Gemini app also checks Content Credentials, other companies' included. Google's help page
+      says it supports "Content Credentials versions 2.2 and later, from products on the C2PA Conforming Products List",
+      at gemini.google.com and on Android, with iOS to follow. Its SynthID check is narrower: Gemini "can currently only
+      recognize content created by Google AI tools". For SynthID watermarks from Google's partners, such as OpenAI, use the SynthID Detector at synthid.com, open to everyone since 7 October 2026.</p>
+
+    <h2 id="others">Other AI tools</h2>
+    <ul>
+      <li><strong>Microsoft:</strong> images from Image Creator in Microsoft Designer carried Content Credentials signed
+        by Microsoft Corporation by June 2024, as the example above shows.</li>
+      <li><strong>Adobe Firefly:</strong> Adobe "automatically applies Content Credentials to assets where 100% of the
+        pixels are generated using Adobe Firefly, such as Text to Image", with Adobe as the issuer.</li>
+      <li><strong>Anthropic's Claude</strong> adds Content Credentials to some file types it creates or modifies.</li>
+    </ul>
+    <p>A tool that doesn't sign its output leaves nothing to find, so the list of tools that do matters as much as the check.</p>
+
+    <h2 id="c2pa-vs-synthid">C2PA and SynthID side by side</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>Content Credentials (C2PA)</th><th>SynthID</th></tr></thead>
+        <tbody>
+          <tr><th>What it is</th><td>A signed record of who made the file and how</td><td>An invisible watermark from Google DeepMind</td></tr>
+          <tr><th>Where it lives</th><td>In the file's metadata</td><td>In the image or sound itself</td></tr>
+          <tr><th>What it says</th><td>Signer, app, date, every recorded action and ingredient</td><td>That the maker's AI generated or edited it</td></tr>
+          <tr><th>After a screenshot or re-save</th><td>Often lost: a screenshot is a new file without it</td><td>May still be found: "if metadata is removed from a file, an embedded watermark may still provide a signal" (OpenAI)</td></tr>
+          <tr><th>Who can check it</th><td>Anyone, with any C2PA viewer such as c2paview; the Gemini app checks version 2.2 and later from conforming products</td><td>Google's SynthID Detector (synthid.com) for Google's and partners' marks; also the Gemini app for Google's and openai.com/verify for OpenAI's</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="no-label">Why a missing label proves nothing</h2>
+    <p>Only some cameras and apps add Content Credentials, so many images never had any. And in OpenAI's words,
+      "platforms, editing tools, and file conversions may remove it." The C2PA's own guidance warns against
+      "screen-shotting or re-exporting the file through tools that remove metadata, as this can strip the embedded
+      Content Credentials". A picture posted online may come back out unsigned, and a screenshot is a new file with no record. So "no credentials" is the normal case, not a
+      sign of anything: it says neither that the image is real nor that it is fake.</p>
+
+    <h2 id="detectors">What about AI image detectors?</h2>
+    <p>c2paview is not an AI image detector: it does not score the picture. It reports what the signer declared, and whether that record is intact. A detector is a different kind of tool, and no record means nothing for c2paview to read.</p>
+
+    <section class="faq" id="faq">
+      <h2>Questions</h2>
+      <h3>Can I tell if a screenshot of an image is AI-generated?</h3>
+      <p>Usually not from its Content Credentials: a screenshot is a new file, without the original's record. A SynthID watermark can survive where metadata does not, so Google's SynthID Detector at synthid.com, or the maker's own checker (the Gemini app for Google, openai.com/verify for OpenAI), may still find it.</p>
+      <h3>Does a green result mean the image is real?</h3>
+      <p>No. Green means the Content Credentials are intact, the file has not changed since it was signed, and the signer is on the C2PA trust list or the older interim trust list. If the signer is an AI tool and the record says the image was generated, a green result confirms exactly that.</p>
+      <h3>Can someone remove the AI label?</h3>
+      <p>Yes. Content Credentials are metadata and can be stripped, which is why their absence proves nothing. They cannot be altered without detection: any change to a signed record or to the content it covers shows as a failed check.</p>
+      <h3>Is my image uploaded when I check it?</h3>
+      <p>No. c2paview runs the Content Authenticity Initiative's open-source C2PA library (c2pa-rs) in your browser, and the file never leaves your device.</p>
+    </section>
+
+    <h2 id="sources">Sources</h2>
+    <ul class="src-list">
+      <li>OpenAI, <a href="https://help.openai.com/en/articles/8912793-c2pa-in-chatgpt-images">Provenance signals in content processed by OpenAI tools</a> (help centre)</li>
+      <li>OpenAI, <a href="https://openai.com/index/advancing-content-provenance/">Advancing content provenance for a safer, more transparent AI ecosystem</a>, 19 May 2026</li>
+      <li>Google, <a href="https://blog.google/innovation-and-ai/products/ai-image-verification-gemini-app/">How we're bringing AI image verification to the Gemini app</a>, 20 November 2025</li>
+      <li>Google, <a href="https://support.google.com/gemini/answer/16722517?hl=en">Verify AI-generated images, videos, and audio</a> (Gemini Apps Help), and <a href="https://blog.google/innovation-and-ai/technology/ai/google-io-2026-all-our-announcements/">100 things we announced at Google I/O 2026</a>, 20 May 2026</li>
+      <li>Google, <a href="https://blog.google/innovation-and-ai/models-and-research/google-deepmind/synth-id-ai-content/">Google expands SynthID Detector for AI content</a>, 7 October 2026, and Google DeepMind, <a href="https://deepmind.google/models/synthid/">SynthID</a></li>
+      <li>Adobe, <a href="https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/content-credentials-overview.html">Content Credentials overview</a> (Firefly help, updated 25 August 2026)</li>
+      <li>C2PA, <a href="https://c2pa.org/wp-content/uploads/sites/33/2026/07/Content-Credentials-Deployment-Guidance.pdf">Content Credentials: Deployment Guidance</a> 1.0, 8 July 2026</li>
+      <li>IPTC, <a href="https://cv.iptc.org/newscodes/digitalsourcetype/">Digital Source Type vocabulary</a></li>
+      <li>The two example images: Wikimedia Commons, public domain (linked in their captions)</li>
+    </ul>
+
+    <p class="related">More: <a href="/what-is-c2pa/">What is C2PA?</a> · <a href="/c2pa-validation-codes/">C2PA validation codes explained</a> · <a href="/">Check a file</a></p>
+  </article>
+</main>
+
+<footer class="notes">
+  <p class="note">Not affiliated with or endorsed by the C2PA, the Content Authenticity Initiative, OpenAI, Google or
+    Microsoft; C2PA™ and Content Credentials are trademarks of their respective owners, used here only to describe the standard.</p>
+  <p class="note">More free tools at <a href="https://games.adamwoodland.com/">Adam's Arcade</a> · Made by <a href="https://adamwoodland.com/">Adam Woodland</a>. Design, code and content developed with the assistance of AI (Anthropic Claude).</p>
+</footer>
+</body>
+</html>

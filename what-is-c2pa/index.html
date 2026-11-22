@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>What is C2PA? Content Credentials explained</title>
+  <meta name="description" content="C2PA, the standard behind Content Credentials, in plain words: who runs it, what a manifest records, who signs files today and what it cannot prove." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://c2paview.com/what-is-c2pa/" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/guide.css" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0d1117" />
+
+  <meta property="og:type"         content="article" />
+  <meta property="og:site_name"    content="c2paview" />
+  <meta property="og:url"          content="https://c2paview.com/what-is-c2pa/" />
+  <meta property="og:title"        content="What is C2PA? Content Credentials explained" />
+  <meta property="og:description"  content="The open standard behind Content Credentials: who runs it, what a manifest records, which cameras, phones and AI tools sign files, and what it cannot prove." />
+  <meta property="og:image"        content="https://c2paview.com/og-what-is-c2pa.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="What is C2PA? A C2PA manifest records who signed the file and when, which app made it and what was done, what it was made from, and a signature over the content" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="What is C2PA? Content Credentials explained" />
+  <meta name="twitter:description" content="The open standard behind Content Credentials: who runs it, what a manifest records, who signs files today and what it cannot prove." />
+  <meta name="twitter:image"       content="https://c2paview.com/og-what-is-c2pa.png" />
+  <meta name="twitter:image:alt"   content="What is C2PA? A C2PA manifest records who signed the file and when, which app made it and what was done, what it was made from, and a signature over the content" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "What is C2PA?",
+        "description": "C2PA, the standard behind Content Credentials, in plain words: who runs it, what a manifest records, who signs files today and what it cannot prove.",
+        "url": "https://c2paview.com/what-is-c2pa/",
+        "mainEntityOfPage": "https://c2paview.com/what-is-c2pa/",
+        "image": "https://c2paview.com/og-what-is-c2pa.png",
+        "datePublished": "2026-11-22",
+        "dateModified": "2026-11-22",
+        "inLanguage": "en",
+        "isPartOf": { "@type": "WebSite", "name": "c2paview", "url": "https://c2paview.com/" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "c2paview", "item": "https://c2paview.com/" },
+          { "@type": "ListItem", "position": 2, "name": "What is C2PA?", "item": "https://c2paview.com/what-is-c2pa/" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is C2PA the same as Content Credentials?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nearly. C2PA is the coalition and its technical standard; Content Credentials is the name for the record that standard defines and puts in a file. The C2PA says of its standard: \"It's called Content Credentials\"."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is C2PA a watermark?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Content Credentials are signed metadata carried with the file, and they can be stripped. A watermark such as Google's SynthID is hidden in the image or sound itself. The two can work together: a copy of the record kept online can be found again through a watermark or a fingerprint, which the C2PA calls \"Durable Content Credentials\"."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I check a file's Content Credentials?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Drop it into c2paview's viewer, which runs the Content Authenticity Initiative's open-source C2PA library in your browser and never uploads the file. It shows who signed it, what was done, and whether it has changed since. A file shared through social media or a messaging app may have lost its credentials, so use the original."
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+<header class="top">
+  <p class="brand"><a href="/">c2pa<span class="brand-hl">view</span></a></p>
+</header>
+
+<main class="layout guide">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">c2paview</a> › What is C2PA?</nav>
+  <article>
+    <h1>What is C2PA?</h1>
+    <p class="lead">C2PA is an open technical standard for recording where a digital file came from and how it has been
+      changed. The record it defines is called Content Credentials: a signed history carried with the file, so anyone can check who signed it, whether that signer is on a trust list, and whether the file has been altered since.</p>
+    <p class="updated">Updated 22 November 2026</p>
+    <a class="cta" href="/">Check a file's Content Credentials</a>
+
+    <h2 id="in-short">C2PA in one paragraph</h2>
+    <p>The Coalition for Content Provenance and Authenticity, or C2PA, in its own words "provides an open technical
+      standard for publishers, creators and consumers to establish the origin and edits of digital content. It's called
+      Content Credentials". A camera, app or AI tool that supports the standard writes a record into the file and signs it
+      with a certificate. Later, any validator, such as c2paview, can check that signature and whether the file still
+      matches what was signed.</p>
+
+    <h2 id="who">Who is behind it</h2>
+    <ul>
+      <li><strong>Founded 22 February 2021</strong> by Adobe, Arm, BBC, Intel, Microsoft and Truepic. It brought together
+        the Adobe-led Content Authenticity Initiative and Project Origin, which Microsoft and the BBC led.</li>
+      <li><strong>Today</strong> it is "a project of the Joint Development Foundation, a Washington-based 501c6
+        non-profit". Its steering committee lists Adobe, Amazon, the BBC, Google, Meta, Microsoft, OpenAI, Publicis Groupe,
+        Sony, TikTok and Truepic.</li>
+      <li><strong>The Content Authenticity Initiative (CAI)</strong> was "founded by Adobe in 2019, and Adobe continues to
+        lead it". It builds the open-source tools, including c2pa-rs, the library c2paview runs in your browser.</li>
+      <li><strong>Project Origin's</strong> work on news provenance now continues at the IPTC.</li>
+      <li><strong>The specification</strong> is at version 2.5, dated October 2026. Version 1.0 was announced in January 2022.</li>
+    </ul>
+
+    <h2 id="manifest">What a manifest records</h2>
+    <p>Each set of Content Credentials is a manifest. Its parts:</p>
+    <ul>
+      <li><strong>Assertions</strong>: statements about the file, such as what was done to it (created, opened, edited,
+        converted), how it was made (for example captured with a camera, or generated by AI), and what it was made from.</li>
+      <li><strong>Hard binding</strong>: a hash of the file's content. If the bytes change, the hash no longer matches and
+        the check fails with <code>assertion.dataHash.mismatch</code> or a similar code.</li>
+      <li><strong>The claim</strong>: the signed part. It names the app that made the record (the "claim generator") and
+        points to every assertion by its hash, so a changed assertion no longer matches the signed claim and fails with <code>assertion.hashedURI.mismatch</code>.</li>
+      <li><strong>The signature</strong>: made with the signer's certificate, sometimes with a trusted time-stamp. The
+        certificate names the signer, such as OpenAI, Google LLC or a camera maker.</li>
+      <li><strong>Ingredients</strong>: earlier files this one was made from. Each can carry its own manifest, so a file's
+        history can be a chain of signed steps.</li>
+    </ul>
+    <p>A validator then sorts the manifest into the specification's states: Well-Formed, Valid (unchanged since signing,
+      signature good) and Trusted (also signed by a certificate on a trust list). Each check is reported as a status code:
+      see <a href="/c2pa-validation-codes/">C2PA validation codes explained</a>.</p>
+
+    <h2 id="trust">Trust lists and conformance</h2>
+    <p>A valid signature proves the file is unchanged since someone signed it. Whether you can trust that someone depends
+      on the trust lists. The specification defines the C2PA Trust List as "a C2PA-managed list of X.509 certificate trust
+      anchors that issue certificates to hardware &amp; software signers". Products earn a place through the C2PA
+      Conformance Program, launched on 4 June 2025: "54 products from 31 companies have passed conformance (as of May 14,
+      2026)". An earlier interim trust list was frozen on 1 January 2026; during the transition, validators may consult both it and the C2PA trust list, but must tell the two apart.
+      c2paview checks the official lists and the frozen interim list, does not yet tell the two apart, and shows amber when the signer is on neither.</p>
+
+    <h2 id="cr-icon">The "cr" icon</h2>
+    <p>On 10 October 2023 the C2PA introduced the official Content Credentials icon, "a minimalist pin containing the
+      letters "CR"". The C2PA owns its trademark. Its design guidance says the icon "should already indicate the presence of
+      a valid manifest". LinkedIn, for one, marks signed images and videos with it.</p>
+
+    <h2 id="who-signs">Who adds Content Credentials today</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Who</th><th>What</th><th>Since</th></tr></thead>
+        <tbody>
+          <tr><th>Leica</th><td>The M11-P, announced as "the world's first camera to store metadata by attaching Content Credentials at the point of capture". Leica now lists six such cameras: M11-P, M11-D, M EV1, SL3-P, SL3-S and Q3 Monochrom.</td><td>October 2023</td></tr>
+          <tr><th>Sony</th><td>Camera Authenticity Solution: an in-camera signature in C2PA format, aimed at news organisations. Video since October 2025, on five cameras at launch. Its Camera Verify service is in beta.</td><td>Video: October 2025</td></tr>
+          <tr><th>Nikon</th><td>The Nikon Authenticity Service, launched with Z6III firmware 2.00 on 27 August 2025, then suspended: PetaPixel reported the suspension on 5 September 2025, and Nikon Rumors reproduced a Nikon email saying certificates issued before it would be invalidated. No resumption has been confirmed.</td><td>August 2025 (suspended September 2025)</td></tr>
+          <tr><th>Canon</th><td>Authenticity Imaging System for the EOS R1 and EOS R5 Mark II, starting in Europe, the Middle East and Africa. "C2PA functionality requires paid activation."</td><td>May 2026</td></tr>
+          <tr><th>Google Pixel</th><td>Pixel 10's own camera app adds them to its JPEG photos, in the modes it supports; Google Photos shows the record under "How this was made" on Android and iOS.</td><td>August 2025</td></tr>
+          <tr><th>Samsung Galaxy</th><td>Samsung says the Galaxy S25 series supports Content Credentials, adopted "to enhance transparency for content created and edited with generative AI".</td><td>February 2025</td></tr>
+          <tr><th>OpenAI</th><td>Images from ChatGPT, Codex and the OpenAI API, now with a SynthID watermark as well (OpenAI says coverage varies by product, model and export path). See <a href="/check-if-image-is-ai-generated/#chatgpt">ChatGPT</a>.</td><td>By September 2024</td></tr>
+          <tr><th>Microsoft</th><td>Images from Image Creator in Microsoft Designer, signed by Microsoft Corporation (see the <a href="/check-if-image-is-ai-generated/#examples">example</a>).</td><td>By June 2024</td></tr>
+          <tr><th>Google AI</th><td>Images generated by Nano Banana Pro in the Gemini app, Vertex AI and Google Ads.</td><td>November 2025</td></tr>
+          <tr><th>Adobe Firefly</th><td>Images whose pixels are all generated with Firefly, such as Text to Image, with Adobe as the issuer.</td><td>-</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Some platforms also show or keep them. LinkedIn shows the icon on signed media. YouTube adds "Captured with a
+      camera" to unedited video signed with C2PA 2.1 or later. TikTok labels AI-generated uploads from certain other platforms
+      using Content Credentials. Cloudflare Images has a "Preserve Content Credentials" setting, and the Gemini app can
+      check them. Other platforms "might remove C2PA manifest data", as the CAI's documentation puts it, so a file passed around online may arrive without any.</p>
+
+    <h2 id="identity">Identity: who vouches for a file</h2>
+    <p>The Creator Assertions Working Group (CAWG) "builds upon the work of the Coalition for Content Provenance and
+      Authenticity (C2PA) by defining additional assertions that allow content creators to express individual and
+      organizational intent about their content". Since March 2025 it has been a working group of the Decentralized
+      Identity Foundation. Its identity assertion (version 1.3, ratified 17 August 2026) lets a named person or
+      organisation sign to vouch for a file. c2paview shows it as "Who vouches for it", always as unconfirmed, because no
+      trust list for identity credentials is set up here.</p>
+
+    <h2 id="limits">What C2PA cannot prove</h2>
+    <ul>
+      <li><strong>That the picture is true.</strong> The record shows what the signer declared and, when the signer is on a trust list, who they are. Google's
+        Gemini help puts it plainly: Content Credentials don't tell you "if an image, video, or audio file is definitely
+        AI-generated", but give origin and history to judge it by.</li>
+      <li><strong>Anything, when it is missing.</strong> Credentials can be removed. The C2PA's own guidance says "embedded
+        information can be stripped, watermarks can be defeated, and fingerprint matching is probabilistic rather than
+        exact". No credentials means no information either way.</li>
+      <li><strong>An exact time, from a camera's clock.</strong> Canon notes that capture times "are recorded based on the
+        camera's internal clock, and are therefore not guaranteed to exactly match the actual date and time of capture".
+        A trusted time-stamp, when present, dates the signature itself.</li>
+      <li><strong>Who an unlisted signer really is.</strong> A valid signature from a certificate on no trust list shows the
+        file is unchanged since it was signed, not who signed it.</li>
+    </ul>
+
+    <section class="faq" id="faq">
+      <h2>Questions</h2>
+      <h3>Is C2PA the same as Content Credentials?</h3>
+      <p>Nearly. C2PA is the coalition and its technical standard; Content Credentials is the name for the record that standard defines and puts in a file. The C2PA says of its standard: "It's called Content Credentials".</p>
+      <h3>Is C2PA a watermark?</h3>
+      <p>No. Content Credentials are signed metadata carried with the file, and they can be stripped. A watermark such as Google's SynthID is hidden in the image or sound itself. The two can work together: a copy of the record kept online can be found again through a watermark or a fingerprint, which the C2PA calls "Durable Content Credentials".</p>
+      <h3>How do I check a file's Content Credentials?</h3>
+      <p>Drop it into c2paview's viewer, which runs the Content Authenticity Initiative's open-source C2PA library in your browser and never uploads the file. It shows who signed it, what was done, and whether it has changed since. A file shared through social media or a messaging app may have lost its credentials, so use the original.</p>
+    </section>
+
+    <h2 id="sources">Sources</h2>
+    <ul class="src-list">
+      <li>C2PA: <a href="https://c2pa.org/">home page</a>, <a href="https://c2pa.org/about/">about</a>, <a href="https://c2pa.org/membership/">membership</a>, <a href="https://c2pa.org/faqs/">FAQs</a>, <a href="https://c2pa.org/conformance/">conformance programme</a>, <a href="https://c2pa.org/introducing-official-content-credentials-icon/">introducing the Content Credentials icon</a> (10 October 2023), <a href="https://c2pa.org/c2pa-releases-specification-of-worlds-first-industry-standard-for-content-provenance/">specification 1.0 release</a> (26 January 2022), <a href="https://c2pa.org/wp-content/uploads/sites/33/2026/07/Content-Credentials-Deployment-Guidance.pdf">Content Credentials: Deployment Guidance</a> (8 July 2026)</li>
+      <li>C2PA, <a href="https://spec.c2pa.org/specifications/specifications/2.5/specs/C2PA_Specification.html">Technical Specification 2.5</a> (October 2026), CC BY 4.0, and <a href="https://spec.c2pa.org/specifications/specifications/2.2/ux/UX_Recommendations.html">UX recommendations</a></li>
+      <li>Microsoft, <a href="https://news.microsoft.com/source/2021/02/22/technology-and-media-entities-join-forces-to-create-standards-group-aimed-at-building-trust-in-online-content/">founding announcement</a>, 22 February 2021</li>
+      <li>Content Authenticity Initiative, <a href="https://contentauthenticity.org/how-it-works">how it works</a> and <a href="https://opensource.contentauthenticity.org/docs/conformance/trust-lists/">trust lists</a>; IPTC, <a href="https://iptc.org/media-provenance/">media provenance</a></li>
+      <li>Creator Assertions Working Group, <a href="https://cawg.io/faq/">FAQ</a> and <a href="https://cawg.io/identity/1.3/">Identity Assertion 1.3</a></li>
+      <li>Leica, <a href="https://leica-camera.com/en-int/press/new-leica-m11-p">M11-P launch</a> and <a href="https://leica-camera.com/en-int/photography/content-credentials">Content Credentials</a>; Sony, <a href="https://authenticity.sony.net/camera/en-gb/">Camera Authenticity Solution</a> and <a href="https://alphauniverse.com/stories/sony-launches-first-video-ready-camera-authenticity-solution-for-newsrooms/">video launch</a> (30 October 2025); Nikon, <a href="https://www.nikon.com/company/news/2025/0827_imaging_01/">Z6III firmware 2.00</a> (27 August 2025) and <a href="https://petapixel.com/2025/09/05/nikon-suspends-c2pa-functionality-on-the-z6-iii-due-to-authentication-issue/">PetaPixel on the suspension</a>; Canon, <a href="https://global.canon/en/news/2026/20260511.html">Authenticity Imaging System</a> (11 May 2026)</li>
+      <li>Google, <a href="https://blog.google/products-and-platforms/devices/pixel/pixel-10-camera-features/">Pixel 10 camera</a> (20 August 2025), <a href="https://support.google.com/photos/answer/16496549?hl=en">Google Photos help</a>, <a href="https://support.google.com/gemini/answer/16722517?hl=en">Gemini Apps help</a>, <a href="https://support.google.com/youtube/answer/15446725?hl=en">YouTube help</a>; Samsung, <a href="https://news.samsung.com/global/samsung-galaxy-s25-series-arrives-worldwide">Galaxy S25 series</a></li>
+      <li>OpenAI, <a href="https://help.openai.com/en/articles/8912793-c2pa-in-chatgpt-images">provenance signals</a>; Google, <a href="https://blog.google/innovation-and-ai/products/ai-image-verification-gemini-app/">AI image verification in Gemini</a> (20 November 2025); Adobe, <a href="https://helpx.adobe.com/firefly/web/get-started/learn-the-basics/content-credentials-overview.html">Firefly Content Credentials</a></li>
+      <li>LinkedIn, <a href="https://www.linkedin.com/help/linkedin/answer/a6282984">Content Credentials help</a>; TikTok, <a href="https://newsroom.tiktok.com/partnering-with-our-industry-to-advance-ai-transparency-and-literacy?lang=en">partnering on AI transparency</a> (9 May 2024); Cloudflare, <a href="https://blog.cloudflare.com/preserve-content-credentials-with-cloudflare-images/">Preserve Content Credentials</a></li>
+    </ul>
+
+    <p class="related">More: <a href="/check-if-image-is-ai-generated/">Is this image AI-generated?</a> · <a href="/c2pa-validation-codes/">C2PA validation codes explained</a> · <a href="/">Check a file</a></p>
+  </article>
+</main>
+
+<footer class="notes">
+  <p class="note">Not affiliated with or endorsed by the C2PA, the Content Authenticity Initiative or any company named
+    here; C2PA™ and Content Credentials are trademarks of their respective owners, used here only to describe the standard.</p>
+  <p class="note">More free tools at <a href="https://games.adamwoodland.com/">Adam's Arcade</a> · Made by <a href="https://adamwoodland.com/">Adam Woodland</a>. Design, code and content developed with the assistance of AI (Anthropic Claude).</p>
+</footer>
+</body>
+</html>

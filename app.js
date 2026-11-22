@@ -95,9 +95,14 @@ const CODE_HINTS = {
   'signingCredential.untrusted': 'the signing certificate is not on the known-certificates list',
   'signingCredential.expired': 'the signing certificate had expired',
   'signingCredential.revoked': 'the signing certificate was revoked',
+  'signingCredential.ocsp.revoked': 'the signing certificate was revoked by its issuer',   // the spec's name for it
+  'claimSignature.outsideValidity': 'the record was signed outside the signing certificate’s validity period',
+  'assertion.bmffHash.mismatch': 'the video/audio/image data has been changed since signing',
   'timeStamp.mismatch': 'the trusted timestamp does not match',
   'general.error': 'the manifest could not be read',
 };
+// The row id for a code on /c2pa-validation-codes/ (assertion.dataHash.mismatch -> assertion-datahash-mismatch).
+const codeAnchor = (code) => String(code).toLowerCase().replace(/[^a-z0-9]+/g, '-');
 // What kind of check failed, so a red result says which: only a content hash mismatch means the file
 // itself changed; a bad signature or manifest, or a signer problem, says nothing about edits.
 function failureKinds(list) {
@@ -362,6 +367,7 @@ function showResult(file, report) {
   const prev = $('#preview');
   prev.onerror = () => { prev.hidden = true; };
   if (file.type.startsWith('image/')) {
+    prev.alt = `Preview of ${file.name}`;
     prev.src = URL.createObjectURL(file);
     prev.hidden = false;
   } else prev.hidden = true;
@@ -416,7 +422,11 @@ function showResult(file, report) {
     const ul = elc('ul');
     for (const s of status.filter((x) => !unexplained || x.code !== 'signingCredential.untrusted')) {
       const li = elc('li');
-      li.appendChild(elc('code', '', s.code));
+      const codeLink = elc('a');   // each code has its own row on the codes page
+      codeLink.href = `/c2pa-validation-codes/#${codeAnchor(s.code)}`;
+      codeLink.title = 'What this code means';
+      codeLink.appendChild(elc('code', '', s.code));
+      li.appendChild(codeLink);
       li.appendChild(document.createTextNode(` - ${CODE_HINTS[s.code] || s.explanation || ''}`));
       const where = whereOf(s.url);
       if (where) {

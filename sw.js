@@ -4,10 +4,12 @@
 //  - Bump CACHE on deploys that change any precached file.
 //  - Also receives Android share-sheet files (share_target POST /share): the shared file is
 //    parked under a one-time id and the client picks it up after redirect (see INBOX below).
-const CACHE = 'cv-v14';
+//  - The shell is '/', never '/index.html': that URL 301s to '/' (the canonical-host function), so
+//    a precached copy would be a redirected response, which browsers refuse for a navigation (an
+//    offline /?shared=<id> handoff would fail).
+const CACHE = 'cv-v15';
 const CORE = [
 	'/',
-	'/index.html',
 	'/styles.css',
 	'/app.js',
 	'/lib/c2pa-web.js',
@@ -108,7 +110,7 @@ self.addEventListener('fetch', (e) => {
 			.catch(async () => {
 				const hit = await caches.match(req);
 				if (hit) return hit;
-				if (req.mode === 'navigate') { const shell = await caches.match('/index.html'); if (shell) return shell; }
+				if (req.mode === 'navigate') { const shell = await caches.match('/'); if (shell) return shell; }
 				return Response.error();
 			})
 	);

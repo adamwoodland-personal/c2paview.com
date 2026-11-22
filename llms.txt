@@ -1,16 +1,19 @@
-# C2PA View
+# c2paview
 
-> Drop any image, video or audio file and inspect its C2PA Content Credentials: who signed it, when, with what tool, whether it is AI-generated, and whether it has been altered since signing. Validation runs entirely in the browser via the official C2PA reference implementation (c2pa-rs, compiled to WebAssembly through the c2pa-web SDK) - the file is never uploaded. Free, no accounts, no cookies, no analytics.
+> Drop any image, video or audio file and inspect its C2PA Content Credentials: who signed it, when, with what tool, whether it is AI-generated, and whether it has been altered since signing. Validation runs entirely in the browser via the Content Authenticity Initiative's open-source C2PA library (c2pa-rs, compiled to WebAssembly through the c2pa-web SDK) - the file is never uploaded. Free, no accounts, no cookies, no analytics.
 
-Files produced by AI assistants often carry Content Credentials: Anthropic's Claude adds C2PA to some file types it creates or modifies, and DALL-E and Adobe Firefly sign their images - this tool shows exactly what such a file declares. To add credentials to your own files, see https://zerofake.app/ or the open-source c2patool.
+Files produced by AI tools often carry Content Credentials: images made with ChatGPT or the OpenAI API carry them (since May 2026 alongside a SynthID watermark), Google's Nano Banana Pro images in the Gemini app carry them, Adobe adds them to images generated entirely with Firefly, and Anthropic's Claude adds C2PA to some file types it creates or modifies - this tool shows exactly what such a file declares. It reads C2PA only: it cannot detect SynthID watermarks, which Google's SynthID Detector (synthid.com) checks for Google's AI and partners including OpenAI; the Gemini app and openai.com/verify also check their own makers' marks. To add credentials to your own files, see https://zerofake.app/ or the open-source c2patool.
 
 Supported: JPEG, PNG, WebP, AVIF, GIF, TIFF, SVG, MP4, MOV, MP3, WAV, PDF and .c2pa sidecar files.
 
-What results mean: green = credentials present, hashes and signature verify, unaltered since signing, and the signer's certificate is on the C2PA trust lists; amber = intact but the signer can't be verified (not on the trust lists, or the lists could not be loaded), or the checks were inconclusive; red = a check failed, saying which kind (content changed after signing, credentials whose signature or manifest don't verify, or a signer certificate problem), with the C2PA validation codes explained in plain language; no Content Credentials = the normal case for most files, with any byte-level traces of earlier credentials listed as clues, not proof. If the file carries a CAWG identity assertion, a "Who vouches for it" section names the person or organisation and what they vouch for, checked separately from the main result and always shown as unconfirmed (no trust list for identity credentials is configured).
+What results mean: green = credentials present, hashes and signature verify, unaltered since signing, and the signer's certificate is on the C2PA trust list or the older interim trust list; amber = intact but the signer can't be verified (not on the trust lists, or the lists could not be loaded), or the checks were inconclusive; red = a check failed, saying which kind (content changed after signing, credentials whose signature or manifest don't verify, or a signer certificate problem), with the C2PA validation codes explained in plain language; no Content Credentials = the normal case for most files, with any byte-level traces of earlier credentials listed as clues, not proof. If the file carries a CAWG identity assertion, a "Who vouches for it" section names the person or organisation and what they vouch for, checked separately from the main result and always shown as unconfirmed (no trust list for identity credentials is configured).
 
 ## Links
 
-- [C2PA View](https://c2paview.com/): the tool
+- [c2paview](https://c2paview.com/): the tool
+- [How to check if an image is AI-generated](https://c2paview.com/check-if-image-is-ai-generated/): what Content Credentials and SynthID show, which AI tools add them, and why a missing label proves nothing
+- [What is C2PA?](https://c2paview.com/what-is-c2pa/): the standard behind Content Credentials, who runs it, what a manifest records and what it cannot prove
+- [C2PA validation codes explained](https://c2paview.com/c2pa-validation-codes/): every validation status code in the specification's words, the common ones in plain words, and how green, amber and red are decided
 - [C2PA specification](https://c2pa.org/): the standard this reads
 - [c2pa-web](https://github.com/contentauth/c2pa-js): the SDK doing the validation (wraps [c2pa-rs](https://github.com/contentauth/c2pa-rs))
 

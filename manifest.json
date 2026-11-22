@@ -1,6 +1,6 @@
 {
-	"name": "C2PA View - Content Credentials Viewer",
-	"short_name": "C2PA View",
+	"name": "c2paview - Content Credentials viewer",
+	"short_name": "c2paview",
 	"description": "Inspect and validate C2PA Content Credentials in any image, video or audio file - entirely on your device.",
 	"start_url": "/",
 	"scope": "/",

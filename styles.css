@@ -15,8 +15,8 @@ a { color: var(--accent); }
 code { font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; }
 
 .top { padding: 26px 22px 4px; max-width: 860px; margin: 0 auto; }
-.tag { margin: 10px 0 0; font-size: 19px; font-weight: 600; color: var(--accent); }
-.brand { margin: 0; font-size: 30px; letter-spacing: 0.01em; }
+.tag { margin: 10px 0 0; font-size: 19px; font-weight: 600; line-height: 1.35; color: var(--accent); }
+.brand { margin: 0; font-size: 30px; font-weight: 700; line-height: 1.2; letter-spacing: 0.01em; }
 .brand-hl { color: var(--accent); }
 .sub { margin: 8px 0 0; color: var(--muted); max-width: 72ch; }
 
@@ -74,7 +74,7 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 0.92em; }
 .faq-head { grid-column: 1 / -1; margin: 4px 0 0; font-size: 18px; }
 .explain { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 22px; }
 .explain-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
-.explain-card h2 { margin: 0 0 8px; font-size: 15px; }
+.explain-card h3 { margin: 0 0 8px; font-size: 15px; }
 .explain-card p { margin: 0; color: var(--muted); font-size: 13.5px; }
 .notes { max-width: 860px; margin: 0 auto; padding: 4px 22px 30px; }
 .note { color: var(--muted); font-size: 12.5px; }

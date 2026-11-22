@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>C2PA validation codes explained: every status code</title>
+  <meta name="description" content="All 126 C2PA validation status codes in the specification's words, the ones you are most likely to see in plain words, and how green, amber and red are decided." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://c2paview.com/c2pa-validation-codes/" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/guide.css" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0d1117" />
+
+  <meta property="og:type"         content="article" />
+  <meta property="og:site_name"    content="c2paview" />
+  <meta property="og:url"          content="https://c2paview.com/c2pa-validation-codes/" />
+  <meta property="og:title"        content="C2PA validation codes explained" />
+  <meta property="og:description"  content="Every C2PA validation status code in the specification's words, the common ones in plain words, and how a result turns green, amber or red." />
+  <meta property="og:image"        content="https://c2paview.com/og-validation-codes.png" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt"    content="C2PA validation codes explained: claimSignature.validated in green, signingCredential.untrusted in amber, assertion.dataHash.mismatch in red" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="C2PA validation codes explained" />
+  <meta name="twitter:description" content="Every C2PA validation status code in the specification's words, the common ones in plain words, and how a result turns green, amber or red." />
+  <meta name="twitter:image"       content="https://c2paview.com/og-validation-codes.png" />
+  <meta name="twitter:image:alt"   content="C2PA validation codes explained: claimSignature.validated in green, signingCredential.untrusted in amber, assertion.dataHash.mismatch in red" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": "C2PA validation status codes",
+        "description": "All 126 C2PA validation status codes in the specification's words, the ones you are most likely to see in plain words, and how green, amber and red are decided.",
+        "url": "https://c2paview.com/c2pa-validation-codes/",
+        "mainEntityOfPage": "https://c2paview.com/c2pa-validation-codes/",
+        "image": "https://c2paview.com/og-validation-codes.png",
+        "datePublished": "2026-11-22",
+        "dateModified": "2026-11-22",
+        "inLanguage": "en",
+        "isPartOf": { "@type": "WebSite", "name": "c2paview", "url": "https://c2paview.com/" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "c2paview", "item": "https://c2paview.com/" },
+          { "@type": "ListItem", "position": 2, "name": "C2PA validation codes", "item": "https://c2paview.com/c2pa-validation-codes/" }
+        ]
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does signingCredential.untrusted mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The signer's certificate does not lead back to any certificate on the trust lists the validator uses, so the name in it can't be confirmed. The file can still be intact and validly signed: if the other checks pass, the C2PA specification counts such a manifest as Valid, just not Trusted. When it is the only failure, c2paview shows it amber."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does assertion.dataHash.mismatch mean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The file's content no longer matches the hash recorded when it was signed: the bytes the signature covers have changed since, by editing, re-saving or damage. c2paview shows it red, as changed after signing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Valid and Trusted?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In the C2PA specification, a Valid manifest is well-formed and has not been modified since it was signed, its signature validated and was made within the signing certificate's validity period, and that certificate has not been revoked. A Trusted manifest is all of that, and its signing certificate is on a trust list. The C2PA library c2paview uses reports Invalid for anything below Valid."
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+<header class="top">
+  <p class="brand"><a href="/">c2pa<span class="brand-hl">view</span></a></p>
+</header>
+
+<main class="layout guide">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">c2paview</a> › C2PA validation codes</nav>
+  <article>
+    <h1>C2PA validation status codes</h1>
+    <p class="lead">When a validator checks a file's Content Credentials, it reports each check as a status code: a
+      success, an informational note or a failure. Version 2.5 of the C2PA specification (October 2026) defines 126 of
+      them. Below: the ones you are most likely to meet, in plain words, then every code in the specification's own words.</p>
+    <p class="updated">Updated 22 November 2026</p>
+    <a class="cta" href="/">Check a file now</a>
+
+    <h2 id="colours">How c2paview turns codes into green, amber and red</h2>
+    <ul>
+      <li><strong class="cat good">Green</strong>: no failure codes, the signature validated
+        (<code>claimSignature.validated</code>), and the signer is on the C2PA trust list or the older interim trust list (<code>signingCredential.trusted</code>, validation state Trusted).</li>
+      <li><strong class="cat warn">Amber</strong>: the only failure is <code>signingCredential.untrusted</code>, so the
+        file is intact but who signed it can't be confirmed; or the trust lists could not be loaded; or the checks did not
+        come back conclusive either way.</li>
+      <li><strong class="cat bad">Red</strong>: any other failure code. The result says which kind: content that no
+        longer matches (a <code>…Hash.mismatch</code>), which means the file changed after signing; a problem with the
+        credentials themselves, such as their signature; or a problem with the signer's certificate. A manifest the library calls Invalid without naming a failure is red too.</li>
+    </ul>
+    <p>Informational codes never change the colour. Time-stamp problems are informational on purpose: the
+      specification says a failed time-stamp "does not necessarily (by itself) cause the C2PA Manifest to be rejected",
+      and the validator then carries on as if there were none. Identity codes (<code>cawg.*</code>) are listed with the identity they belong to, not in the file's verdict, though a failed identity check can stop the library reporting the manifest as Trusted, which leaves the verdict amber.</p>
+    <p>The specification sorts a manifest into three states: Well-Formed, Valid and Trusted. "Any Trusted manifest is
+      also Valid, and any Valid manifest is also Well-Formed." The C2PA library c2paview uses reports Invalid, Valid or
+      Trusted instead, with Invalid covering everything below Valid.</p>
+
+    <h2 id="common">The codes you are most likely to see</h2>
+    <div class="table-wrap">
+      <table class="codes">
+        <thead><tr><th>Code</th><th>Kind</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr id="claimsignature-validated"><td><code>claimSignature.validated</code></td><td class="cat good">success</td><td>The signature on the record checks out.</td></tr>
+          <tr id="signingcredential-trusted"><td><code>signingCredential.trusted</code></td><td class="cat good">success</td><td>The signer's certificate leads back to one on the trust lists, so who signed it is confirmed.</td></tr>
+          <tr id="assertion-datahash-match"><td><code>assertion.dataHash.match</code></td><td class="cat good">success</td><td>The bytes the signature covers still match the hash recorded at signing.</td></tr>
+          <tr id="assertion-bmffhash-match"><td><code>assertion.bmffHash.match</code></td><td class="cat good">success</td><td>The same check for files built from boxes, such as MP4 and MOV.</td></tr>
+          <tr id="timestamp-validated"><td><code>timeStamp.validated</code></td><td class="cat good">success</td><td>A time-stamp authority confirmed when the record was signed.</td></tr>
+          <tr id="signingcredential-untrusted"><td><code>signingCredential.untrusted</code></td><td class="cat warn">failure, shown amber</td><td>The signer's certificate is not on the trust lists the validator uses, so the name in it can't be confirmed. The file can still be intact: if the other checks pass, the specification still counts the manifest as Valid, just not Trusted.</td></tr>
+          <tr id="assertion-datahash-mismatch"><td><code>assertion.dataHash.mismatch</code></td><td class="cat bad">failure</td><td>The file's bytes no longer match the hash recorded at signing: it was edited, re-saved or damaged afterwards.</td></tr>
+          <tr id="assertion-bmffhash-mismatch"><td><code>assertion.bmffHash.mismatch</code></td><td class="cat bad">failure</td><td>The same, for box-based files such as MP4 and MOV.</td></tr>
+          <tr id="assertion-hasheduri-mismatch"><td><code>assertion.hashedURI.mismatch</code></td><td class="cat bad">failure</td><td>One of the record's statements was changed after the record was signed.</td></tr>
+          <tr id="claimsignature-mismatch"><td><code>claimSignature.mismatch</code></td><td class="cat bad">failure</td><td>The signature does not match the record: the record was altered, or the signature is broken.</td></tr>
+          <tr id="signingcredential-expired"><td><code>signingCredential.expired</code></td><td class="cat bad">failure</td><td>The signer's certificate was found to be expired. An older code (in specifications up to 2.1, dropped in 2.2) that the C2PA library still reports; the current specification's closest code is <code>claimSignature.outsideValidity</code>.</td></tr>
+          <tr id="signingcredential-ocsp-revoked"><td><code>signingCredential.ocsp.revoked</code></td><td class="cat bad">failure</td><td>The certificate's issuer has revoked it.</td></tr>
+          <tr id="timestamp-mismatch"><td><code>timeStamp.mismatch</code></td><td class="cat">informational</td><td>The time-stamp does not belong to this record. It is then ignored, not counted as a failure.</td></tr>
+          <tr id="timestamp-untrusted"><td><code>timeStamp.untrusted</code></td><td class="cat">informational</td><td>The time-stamp authority is not on the time-stamp trust list. Also ignored rather than failed.</td></tr>
+          <tr id="ingredient-unknownprovenance"><td><code>ingredient.unknownProvenance</code></td><td class="cat">informational</td><td>A file this one was made from had no credentials of its own.</td></tr>
+          <tr id="general-error"><td><code>general.error</code></td><td class="cat bad">failure</td><td>Something went wrong that no other code describes.</td></tr>
+          <tr id="cawg-identity-well-formed"><td><code>cawg.identity.well-formed</code></td><td class="cat good">identity: success</td><td>A named person's or organisation's identity claim is properly signed, but no trust source confirms who they are. c2paview always shows the name as unconfirmed.</td></tr>
+          <tr id="cawg-x509-credential-untrusted"><td><code>cawg.x509.credential.untrusted</code></td><td class="cat warn">identity: failure</td><td>No chain of trust leads from the certificate behind an identity claim to a trust anchor the validator has, or a certificate in that chain was revoked.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="success">Success codes (18)</h2>
+    <p>Each meaning is quoted from the C2PA Technical Specification 2.5, Appendix D. "In c2paview" says whether the code's name is in the validator c2paview runs (the C2PA library c2pa-rs, version 0.91.3); a code that isn't cannot appear in a result yet. Every code it reports is in the raw manifest view, and failures other than identity ones are also listed in the verdict.</p>
+    <!-- codes:success -->
+    <div class="table-wrap">
+      <table class="codes">
+        <thead><tr><th>Code</th><th>What the specification says</th><th>In c2paview</th></tr></thead>
+        <tbody>
+          <tr id="assertion-accessible"><td><code>assertion.accessible</code></td><td>A non-embedded (remote) assertion was accessible at the time of validation.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-alternativecontentrepresentation-match"><td><code>assertion.alternativeContentRepresentation.match</code></td><td>The original preservation image assertion and its associated content validated successfully.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-bmffhash-match-spec"><td><code>assertion.bmffHash.match</code></td><td>Hash of a box-based asset matches the hash declared in the BMFF hash assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-boxeshash-match"><td><code>assertion.boxesHash.match</code></td><td>Hash of a box-based asset matches the hash declared in the general box hash assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-collectionhash-match"><td><code>assertion.collectionHash.match</code></td><td>Hashes of all the assets contained in a collection matches the hashes declared in the collection data hash assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-datahash-match-spec"><td><code>assertion.dataHash.match</code></td><td>Hash of a byte range of the asset matches the hash declared in the data hash assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-hasheduri-match"><td><code>assertion.hashedURI.match</code></td><td>The hash of the referenced assertion matches the corresponding hash in the assertion’s hashed URI in the claim.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-linkedresourceintegrity-match"><td><code>assertion.linkedResourceIntegrity.match</code></td><td>A resource listed in the linked resource integrity assertion was retrieved and every applicable check (size, media type, and hash) succeeded.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-multiassethash-match"><td><code>assertion.multiAssetHash.match</code></td><td>The hash of one part of a multi-asset hash assertion matches the corresponding hash in the assertion’s multi-asset-hash-map.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-segmenthash-match"><td><code>assertion.segmentHash.match</code></td><td>Hash of a segment of the asset matches the hash declared in the segment hash assertion.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="claimsignature-insidevalidity"><td><code>claimSignature.insideValidity</code></td><td>The claim signature referenced in the claim was created within the validity period of the signing credential</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="claimsignature-validated-spec"><td><code>claimSignature.validated</code></td><td>The claim signature referenced in the claim validated.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="ingredient-claimsignature-validated"><td><code>ingredient.claimSignature.validated</code></td><td>The hash of the ingredient’s C2PA Claim Signature box was successfully validated.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="ingredient-manifest-validated"><td><code>ingredient.manifest.validated</code></td><td>The hash of the ingredient’s C2PA Manifest box was successfully validated.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="signingcredential-ocsp-notrevoked"><td><code>signingCredential.ocsp.notRevoked</code></td><td>The signing credential was not revoked at the time of signing.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="signingcredential-trusted-spec"><td><code>signingCredential.trusted</code></td><td>The claim signing credential is trusted.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="timestamp-trusted"><td><code>timeStamp.trusted</code></td><td>The time stamp credential is trusted.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="timestamp-validated-spec"><td><code>timeStamp.validated</code></td><td>The time stamp is well-formed, has a message imprint that matches the Claim Signature, and was created within the validity period of the time stamp credential.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /codes:success -->
+
+    <h2 id="informational">Informational codes (22)</h2>
+    <!-- codes:informational -->
+    <div class="table-wrap">
+      <table class="codes">
+        <thead><tr><th>Code</th><th>What the specification says</th><th>In c2paview</th></tr></thead>
+        <tbody>
+          <tr id="algorithm-deprecated"><td><code>algorithm.deprecated</code></td><td>The algorithm has been deprecated.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-action-ingredientlocationmismatch"><td><code>assertion.action.ingredientLocationMismatch</code></td><td>The ingredient assertion referenced by a c2pa.opened or c2pa.placed action is not present in the same field of the claim (created_assertions or gathered_assertions) as the actions assertion containing that action.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-bmffhash-additionalexclusionspresent"><td><code>assertion.bmffHash.additionalExclusionsPresent</code></td><td>A BMFF hash specified exclusion ranges other than the C2PA Manifest Store.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-boxeshash-additionalexclusionspresent"><td><code>assertion.boxesHash.additionalExclusionsPresent</code></td><td>A box hash specified exclusion ranges other than the C2PA Manifest Store.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-datahash-additionalexclusionspresent"><td><code>assertion.dataHash.additionalExclusionsPresent</code></td><td>A data hash specified exclusion ranges other than the C2PA Manifest Store.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-linkedresourceintegrity-formatmismatch"><td><code>assertion.linkedResourceIntegrity.formatMismatch</code></td><td>The media type of a retrieved linked resource does not match the dc:format declared in the linked resource integrity assertion.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-linkedresourceintegrity-hashmismatch"><td><code>assertion.linkedResourceIntegrity.hashMismatch</code></td><td>The hash of a linked resource does not match the hash declared in the linked resource integrity assertion.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-linkedresourceintegrity-inaccessible"><td><code>assertion.linkedResourceIntegrity.inaccessible</code></td><td>A resource listed in the linked resource integrity assertion is inaccessible.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-linkedresourceintegrity-sizemismatch"><td><code>assertion.linkedResourceIntegrity.sizeMismatch</code></td><td>The size of a retrieved linked resource does not match the size declared in the linked resource integrity assertion.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-linkedresourceintegrity-skipped"><td><code>assertion.linkedResourceIntegrity.skipped</code></td><td>A resource listed in the linked resource integrity assertion was skipped because the validator chose not to perform network retrieval of the referenced resource.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-redacted"><td><code>assertion.redacted</code></td><td>An assertion was redacted but is still referenced.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="ingredient-unknownprovenance-spec"><td><code>ingredient.unknownProvenance</code></td><td>The ingredient does not have a C2PA Manifest.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="signingcredential-ocsp-inaccessible"><td><code>signingCredential.ocsp.inaccessible</code></td><td>The validator attempted to perform an online OCSP check, but did not receive a response.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="signingcredential-ocsp-skipped"><td><code>signingCredential.ocsp.skipped</code></td><td>The validator chose not to perform an online OCSP check.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="signingcredential-ocsp-unknown"><td><code>signingCredential.ocsp.unknown</code></td><td>The OCSP response contains an unknown status for the signing credential</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="timeofsigning-insidevalidity"><td><code>timeOfSigning.insideValidity</code></td><td>The claimed time of signing (in the iat header of the signature) is within the validity period of the signer’s certificate chain and before the time in any corresponding trusted time stamp.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="timeofsigning-outsidevalidity"><td><code>timeOfSigning.outsideValidity</code></td><td>The claimed time of signing (in the iat header of the signature) is outside the validity period of the signer’s certificate chain or later than the time in a corresponding trusted time stamp.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="timestamp-credentialinvalid"><td><code>timeStamp.credentialInvalid</code></td><td>The time stamp credential is invalid.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="timestamp-malformed"><td><code>timeStamp.malformed</code></td><td>The time stamp response included in the claim signature header is not properly formed, as per RFC 3161</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="timestamp-mismatch-spec"><td><code>timeStamp.mismatch</code></td><td>The time stamp does not correspond to the contents of the claim.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="timestamp-outsidevalidity"><td><code>timeStamp.outsideValidity</code></td><td>The signed time stamp attribute in the signature was created outside the validity period of the TSA’s certificate.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="timestamp-untrusted-spec"><td><code>timeStamp.untrusted</code></td><td>The time stamp credential is not listed on the validator’s TSA trust lists.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /codes:informational -->
+
+    <h2 id="failure">Failure codes (86)</h2>
+    <!-- codes:failure -->
+    <div class="table-wrap">
+      <table class="codes">
+        <thead><tr><th>Code</th><th>What the specification says</th><th>In c2paview</th></tr></thead>
+        <tbody>
+          <tr id="algorithm-unsupported"><td><code>algorithm.unsupported</code></td><td>The algorithm is unspecified or unsupported.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-action-ingredientmismatch"><td><code>assertion.action.ingredientMismatch</code></td><td>An action that requires an associated ingredient either does not have one or the one specified cannot be located</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-action-malformed"><td><code>assertion.action.malformed</code></td><td>An actions assertion is malformed.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-action-redacted"><td><code>assertion.action.redacted</code></td><td>An actions assertion was redacted when the claim was created.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-action-redactionmismatch"><td><code>assertion.action.redactionMismatch</code></td><td>An action that requires an associated redaction either does not have one or the one specified cannot be located</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-action-softbindingmissing"><td><code>assertion.action.softBindingMissing</code></td><td>An action that requires an associated soft binding does not have one</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-alternativecontentrepresentation-hashmismatch"><td><code>assertion.alternativeContentRepresentation.hashMismatch</code></td><td>The hash of the original preservation image content does not match the hash declared in the assertion.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-alternativecontentrepresentation-malformed"><td><code>assertion.alternativeContentRepresentation.malformed</code></td><td>The original preservation image assertion is malformed or contains invalid fields (e.g., both boxes and url fields are present, or invalid target usage).</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-alternativecontentrepresentation-missing"><td><code>assertion.alternativeContentRepresentation.missing</code></td><td>The original preservation image assertion, or its required content, could not be found or resolved.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-bmffhash-malformed"><td><code>assertion.bmffHash.malformed</code></td><td>A BMFF hash assertion is malformed.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-bmffhash-mismatch-spec"><td><code>assertion.bmffHash.mismatch</code></td><td>The hash of a box-based asset does not match the hash declared in a BMFF hash assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-boxeshash-malformed"><td><code>assertion.boxesHash.malformed</code></td><td>The general box hash assertion is malformed.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-boxeshash-mismatch"><td><code>assertion.boxesHash.mismatch</code></td><td>The hash of a general box-like asset format does not match the hash declared in a general box hash assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-boxeshash-unknownbox"><td><code>assertion.boxesHash.unknownBox</code></td><td>A box other than those expected was found</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-cbor-invalid"><td><code>assertion.cbor.invalid</code></td><td>The cbor of an assertion is not valid</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-cloud-data-actions"><td><code>assertion.cloud-data.actions</code></td><td>An update manifest contains a cloud data assertion referencing an actions assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-cloud-data-hardbinding"><td><code>assertion.cloud-data.hardBinding</code></td><td>A hard binding assertion is in a cloud data assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-cloud-data-labelmismatch"><td><code>assertion.cloud-data.labelMismatch</code></td><td>The label of the JUMBF box retrieved from the cloud data assertion does not match the expected label.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-cloud-data-malformed"><td><code>assertion.cloud-data.malformed</code></td><td>The cloud-data assertion was incomplete</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-collectionhash-incorrectfilecount"><td><code>assertion.collectionHash.incorrectFileCount</code></td><td>An asset that was listed in the collection data hash assertion is missing from the collection.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-collectionhash-invaliduri"><td><code>assertion.collectionHash.invalidURI</code></td><td>A URI of an asset in the collection data hash assertion contains the file part '..' or '.'.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-collectionhash-malformed"><td><code>assertion.collectionHash.malformed</code></td><td>The collection hash assertion was incomplete</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-collectionhash-mismatch"><td><code>assertion.collectionHash.mismatch</code></td><td>A hash of an asset in the collection does not match hash declared in the collection data hash assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-datahash-malformed"><td><code>assertion.dataHash.malformed</code></td><td>A data hash assertion is malformed.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-datahash-mismatch-spec"><td><code>assertion.dataHash.mismatch</code></td><td>The hash of a byte range of the asset does not match the hash declared in the data hash assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-datahash-redacted"><td><code>assertion.dataHash.redacted</code></td><td>(DEPRECATED) A hard binding assertion was redacted.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-external-reference-created"><td><code>assertion.external-reference.created</code></td><td>The external reference assertion was present in the list of created assertions</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-external-reference-hashmismatch"><td><code>assertion.external-reference.hashMismatch</code></td><td>The hash of retrieved data does not match the hash declared in the location field of a hashed external reference</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-external-reference-labelmismatch"><td><code>assertion.external-reference.labelMismatch</code></td><td>The label of the JUMBF box retrieved from the external reference assertion does not match the expected label.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-external-reference-malformed"><td><code>assertion.external-reference.malformed</code></td><td>The external reference assertion was incomplete</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-hardbinding-redacted"><td><code>assertion.hardBinding.redacted</code></td><td>A hard binding assertion was redacted.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-hasheduri-mismatch-spec"><td><code>assertion.hashedURI.mismatch</code></td><td>The hash of the referenced assertion in the manifest does not match the corresponding hash in the assertion’s hashed URI in the claim.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-inaccessible"><td><code>assertion.inaccessible</code></td><td>A non-embedded (remote) assertion was inaccessible at the time of validation.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-ingredient-malformed"><td><code>assertion.ingredient.malformed</code></td><td>The ingredient assertion was incomplete</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-json-invalid"><td><code>assertion.json.invalid</code></td><td>The JSON(-LD) of an assertion is not valid</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-linkedresourceintegrity-invaliduri"><td><code>assertion.linkedResourceIntegrity.invalidURI</code></td><td>A URI of a linked resource contains the file part '..'.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-linkedresourceintegrity-malformed"><td><code>assertion.linkedResourceIntegrity.malformed</code></td><td>The linked resource integrity assertion is missing required fields or contains an empty resources array.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-linkedresourceintegrity-notcreated"><td><code>assertion.linkedResourceIntegrity.notCreated</code></td><td>The linked resource integrity assertion was in gathered_assertions instead of created_assertions.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-metadata-malformed"><td><code>assertion.metadata.malformed</code></td><td>The processStart and processEnd fields of an assertion’s metadata are present but processStart is later than processEnd.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-missing"><td><code>assertion.missing</code></td><td>An assertion listed in the manifest’s claim is missing from the asset’s manifest.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-multiassethash-malformed"><td><code>assertion.multiAssetHash.malformed</code></td><td>A multi-asset hash assertion is malformed.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-multiassethash-mismatch"><td><code>assertion.multiAssetHash.mismatch</code></td><td>The hash of a part of a multi-part asset does not match the hash declared in the multi-asset hash assertion.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-multiassethash-missingpart"><td><code>assertion.multiAssetHash.missingPart</code></td><td>A required part of the multi-part asset cannot be located.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-multiplehardbindings"><td><code>assertion.multipleHardBindings</code></td><td>The manifest has more than one hard binding assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-notredacted"><td><code>assertion.notRedacted</code></td><td>An assertion was declared as redacted in the claim but is still present in the manifest.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-outsidemanifest"><td><code>assertion.outsideManifest</code></td><td>An assertion listed in the claim is not in the same C2PA Manifest as the claim</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-segmenthash-malformed"><td><code>assertion.segmentHash.malformed</code></td><td>A segment hash assertion is malformed, or declares a version that the validator does not recognise.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-segmenthash-mismatch"><td><code>assertion.segmentHash.mismatch</code></td><td>The hash of the segment of the asset does not match the hash declared in the segment hash assertion, or the sentinel line is not at the byte offset declared in that assertion.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-segmenthash-partialcoverage"><td><code>assertion.segmentHash.partialCoverage</code></td><td>Part of the asset is not covered by any checkpoint, because the end boundary declared by the active checkpoint does not equal the length of the asset, because the first checkpoint does not begin at the start of the asset, or because there is a gap between two consecutive checkpoints.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-segmenthash-predecessormismatch"><td><code>assertion.segmentHash.predecessorMismatch</code></td><td>The hash of the preceding sentinel line’s bytes does not match the predecessorSentinel.hash value declared in the segment hash assertion.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="assertion-selfredacted"><td><code>assertion.selfRedacted</code></td><td>An assertion was declared as redacted by its own claim.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-timestamp-malformed"><td><code>assertion.timestamp.malformed</code></td><td>The time stamp assertion is malformed.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="assertion-undeclared"><td><code>assertion.undeclared</code></td><td>An assertion was found in the manifest that was not explicitly declared in the claim.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="claim-actions-missing"><td><code>claim.actions.missing</code></td><td>No actions assertion is present in a standard manifest.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="claim-cbor-invalid"><td><code>claim.cbor.invalid</code></td><td>The cbor of the claim is not valid.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="claim-hardbindings-missing"><td><code>claim.hardBindings.missing</code></td><td>No hard bindings are present.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="claim-malformed"><td><code>claim.malformed</code></td><td>The data/fields of the referenced claim in the manifest are not correct.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="claim-missing"><td><code>claim.missing</code></td><td>The referenced claim in the manifest cannot be found.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="claim-multiple"><td><code>claim.multiple</code></td><td>More than one claim box is present in the manifest.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="claimsignature-mismatch-spec"><td><code>claimSignature.mismatch</code></td><td>The claim signature referenced in the claim failed to validate.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="claimsignature-missing"><td><code>claimSignature.missing</code></td><td>The claim signature referenced in the claim cannot be found in its manifest.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="claimsignature-outsidevalidity"><td><code>claimSignature.outsideValidity</code></td><td>The claim signature referenced in the claim was created outside the validity period of the signing credential.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="general-error-spec"><td><code>general.error</code></td><td>A value to be used when there was an error not specifically listed here.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="hasheduri-mismatch"><td><code>hashedURI.mismatch</code></td><td>The hash of a given hashed_uri does not match the corresponding hash of the destination URI’s data</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="hasheduri-missing"><td><code>hashedURI.missing</code></td><td>The data pointed to by a hashed_uri cannot be located</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="ingredient-claimsignature-mismatch"><td><code>ingredient.claimSignature.mismatch</code></td><td>The hash of an embedded C2PA Manifest’s C2PA Claim Signature does not match the hash declared in the hashed_uri value of the claimSignature field in the ingredient assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="ingredient-claimsignature-missing"><td><code>ingredient.claimSignature.missing</code></td><td>The referenced ingredient C2PA Claim Signature was not found.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="ingredient-manifest-mismatch"><td><code>ingredient.manifest.mismatch</code></td><td>The hash of an embedded C2PA Manifest does not match the hash declared in the hashed_uri value of the activeManifest field in the ingredient assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="ingredient-manifest-missing"><td><code>ingredient.manifest.missing</code></td><td>The referenced ingredient C2PA Manifest was not found.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="livevideo-assertion-invalid"><td><code>livevideo.assertion.invalid</code></td><td>The live media segment assertion is not valid: its sequenceNumber is not greater than that of the previous segment, or its streamId doesn’t match that of the previous segment.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="livevideo-continuitymethod-invalid"><td><code>livevideo.continuityMethod.invalid</code></td><td>The continuityMethod is invalid or not recognized.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="livevideo-init-invalid"><td><code>livevideo.init.invalid</code></td><td>The initialization is not valid. For BMFF/CMAF content: (1) the init segment improperly contains a mdat box. For content contributed over Enhanced RTMP: (2) the C2PA Manifest identified by the segment’s manifestId was not obtained before the segment is validated, or (3) the most recent codec configuration of a coded frame’s track is not the one bound by that C2PA Manifest.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="livevideo-manifest-invalid"><td><code>livevideo.manifest.invalid</code></td><td>The manifest failed validation.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="livevideo-segment-invalid"><td><code>livevideo.segment.invalid</code></td><td>The segment is not valid. For BMFF/CMAF content: (1) it contains neither a valid emsg box nor C2PA Manifest Box, (2) the segment’s hash does not match the bmffHash field, (3) the segment’s presentation time is outside the session key’s validity period, or (4) the previousManifestId didn’t match the previous manifest. For content contributed over Enhanced RTMP: (5) it is not closed by a valid VideoPacketType.Metadata or AudioPacketType.Metadata message carrying c2paSegmentInfo, (6) the segment’s hash does not match the segmentHash field, (7) the session key was already used to sign segments of a different track, (8) the Metadata message carrying the rtmp-verifiable-segment-info does not belong to the track it identifies, or (9) the time of validation is outside the session key’s validity period. In either case: (10) no valid session keys, (11) the session key cannot be found or the verifiable-segment-info signature fails signature validation, (12) the sequenceNumber is not greater than that of the previous segment (for Enhanced RTMP, of the same track), or (13) the sequenceNumber is lower than the matching session key’s minSequenceNumber.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="livevideo-sessionkey-invalid"><td><code>livevideo.sessionkey.invalid</code></td><td>The session key is not valid, (1) does not meet requirements for session keys, (2) signerBinding doesn’t validate, or (3) the Claim Generator’s certificate used to protect delivery of the session key is no longer valid (for example, expired or revoked).</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="manifest-appendonlytext-nosentinel"><td><code>manifest.appendOnlyText.noSentinel</code></td><td>No complete sentinel line was found in the append-only text file, or the last sentinel line was incomplete or malformed.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="manifest-compressed-invalid"><td><code>manifest.compressed.invalid</code></td><td>The compressed manifest was not valid.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="manifest-inaccessible"><td><code>manifest.inaccessible</code></td><td>A non-embedded (remote) manifest was inaccessible at the time of validation.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="manifest-inaccessible-encrypted"><td><code>manifest.inaccessible.encrypted</code></td><td>The C2PA Manifest Store is encrypted, or is located within an encrypted region of the asset, such that the validator cannot read its contents.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="manifest-inaccessible-malformed"><td><code>manifest.inaccessible.malformed</code></td><td>The C2PA Manifest Store was retrieved and is readable, but its contents cannot be interpreted as a valid C2PA Manifest Store, such as due to a malformed JUMBF structure or an unsupported or unrecognized box format.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="manifest-multipleparents"><td><code>manifest.multipleParents</code></td><td>The manifest has more than one ingredient whose relationship is parentOf.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="manifest-update-invalid"><td><code>manifest.update.invalid</code></td><td>The manifest is an update manifest, but it contains a disallowed assertion, such as a hard binding or actions assertions.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="manifest-update-wrongparents"><td><code>manifest.update.wrongParents</code></td><td>The manifest is an update manifest, but it contains either zero or multiple parentOf ingredients.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="signingcredential-invalid"><td><code>signingCredential.invalid</code></td><td>The signing credential is not valid for signing.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="signingcredential-ocsp-revoked-spec"><td><code>signingCredential.ocsp.revoked</code></td><td>The OCSP response indicates that the signing credential has been revoked by the issuer.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="signingcredential-untrusted-spec"><td><code>signingCredential.untrusted</code></td><td>The signing credential is not listed on any of the validator’s applicable trust lists.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /codes:failure -->
+
+    <h2 id="older">Older and non-standard codes c2paview can still show</h2>
+    <p>The C2PA library still reports a few codes that are not in specification 2.5.</p>
+    <div class="table-wrap">
+      <table class="codes">
+        <thead><tr><th>Code</th><th>Kind</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr id="signingcredential-expired-older"><td><code>signingCredential.expired</code></td><td class="cat bad">failure</td><td>In specifications up to 2.1 (dropped in 2.2): the signing certificate was found to be expired. See <a href="#signingcredential-expired">above</a>.</td></tr>
+          <tr id="assertion-required-missing"><td><code>assertion.required.missing</code></td><td class="cat bad">failure</td><td>In specifications up to 2.0. The library reports it when it cannot decode an assertion.</td></tr>
+          <tr id="com-adobe-prerelease"><td><code>com.adobe.prerelease</code></td><td class="cat bad">failure</td><td>A custom code, never in the specification: the credentials come from a pre-release draft of the standard and can no longer be validated.</td></tr>
+          <tr id="cawg-x509-credential-invalid"><td><code>cawg.x509.credential.invalid</code></td><td class="cat bad">identity: failure</td><td>Not yet in the identity specification: the certificate behind an identity claim does not meet the C2PA certificate rules.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="identity">Identity codes (CAWG)</h2>
+    <p>Identity assertions, where a named person or organisation vouches for a file, are defined by the Creator
+      Assertions Working Group, now at the Decentralized Identity Foundation. Version 1.3 of its
+      <a href="https://cawg.io/identity/1.3/">identity assertion specification</a> (17 August 2026) defines 54 codes in
+      three families: <code>cawg.identity.*</code> for every identity assertion, <code>cawg.ica.*</code> for identity
+      claims aggregation (an identity provider vouching for someone's verified accounts) and <code>cawg.x509.*</code> for
+      claims signed with an X.509 certificate. Their meanings are in the specification, sections 7.2, 8.1.5.6 and 8.2.2.4.</p>
+    <!-- codes:cawg -->
+    <div class="table-wrap">
+      <table class="codes">
+        <thead><tr><th>Code</th><th>Kind</th><th>Section</th><th>In c2paview</th></tr></thead>
+        <tbody>
+          <tr id="cawg-identity-trusted"><td><code>cawg.identity.trusted</code></td><td class="cat good">success</td><td data-label="Section">7.2</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-identity-well-formed-spec"><td><code>cawg.identity.well-formed</code></td><td class="cat good">success</td><td data-label="Section">7.2</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-credential-valid"><td><code>cawg.ica.credential_valid</code></td><td class="cat good">success</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-time-stamp-validated"><td><code>cawg.ica.time_stamp.validated</code></td><td class="cat good">success</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-credential-not-revoked"><td><code>cawg.ica.credential.not_revoked</code></td><td class="cat good">success</td><td data-label="Section">8.1.5.6</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-credential-trusted"><td><code>cawg.x509.credential.trusted</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-signature-validated"><td><code>cawg.x509.signature.validated</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-signature-inside-validity"><td><code>cawg.x509.signature.inside_validity</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-trusted"><td><code>cawg.x509.time_stamp.trusted</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-validated"><td><code>cawg.x509.time_stamp.validated</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-ocsp-not-revoked"><td><code>cawg.x509.ocsp.not_revoked</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-malformed"><td><code>cawg.x509.time_stamp.malformed</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-mismatch"><td><code>cawg.x509.time_stamp.mismatch</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-untrusted"><td><code>cawg.x509.time_stamp.untrusted</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-outside-validity"><td><code>cawg.x509.time_stamp.outside_validity</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-credential-invalid"><td><code>cawg.x509.time_stamp.credential_invalid</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-of-signing-inside-validity"><td><code>cawg.x509.time_of_signing.inside_validity</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-of-signing-outside-validity"><td><code>cawg.x509.time_of_signing.outside_validity</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-ocsp-skipped"><td><code>cawg.x509.ocsp.skipped</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-ocsp-inaccessible"><td><code>cawg.x509.ocsp.inaccessible</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-ocsp-unknown"><td><code>cawg.x509.ocsp.unknown</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-identity-cbor-invalid"><td><code>cawg.identity.cbor.invalid</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-identity-assertion-mismatch"><td><code>cawg.identity.assertion.mismatch</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-identity-assertion-duplicate"><td><code>cawg.identity.assertion.duplicate</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-identity-credential-revoked"><td><code>cawg.identity.credential_revoked</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-identity-hard-binding-missing"><td><code>cawg.identity.hard_binding_missing</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-identity-hard-binding-incorrect"><td><code>cawg.identity.hard_binding_incorrect</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-identity-sig-type-unknown"><td><code>cawg.identity.sig_type.unknown</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-identity-pad-invalid"><td><code>cawg.identity.pad.invalid</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-identity-network-traffic-blocked"><td><code>cawg.identity.network_traffic_blocked</code></td><td class="cat bad">failure</td><td data-label="Section">7.2</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-ica-invalid-cose-sign1"><td><code>cawg.ica.invalid_cose_sign1</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-invalid-alg"><td><code>cawg.ica.invalid_alg</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-invalid-content-type"><td><code>cawg.ica.invalid_content_type</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-invalid-verifiable-credential"><td><code>cawg.ica.invalid_verifiable_credential</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-invalid-issuer"><td><code>cawg.ica.invalid_issuer</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-did-unsupported-method"><td><code>cawg.ica.did_unsupported_method</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-ica-did-unavailable"><td><code>cawg.ica.did_unavailable</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-invalid-did-document"><td><code>cawg.ica.invalid_did_document</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-untrusted-issuer"><td><code>cawg.ica.untrusted_issuer</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-signature-mismatch"><td><code>cawg.ica.signature_mismatch</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-time-stamp-invalid"><td><code>cawg.ica.time_stamp.invalid</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-valid-from-missing"><td><code>cawg.ica.valid_from.missing</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-valid-from-invalid"><td><code>cawg.ica.valid_from.invalid</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-valid-until-invalid"><td><code>cawg.ica.valid_until.invalid</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-revocation-unsupported"><td><code>cawg.ica.revocation.unsupported</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-ica-revocation-unavailable"><td><code>cawg.ica.revocation.unavailable</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-ica-credential-revoked"><td><code>cawg.ica.credential.revoked</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-ica-signer-payload-mismatch"><td><code>cawg.ica.signer_payload.mismatch</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-ica-verified-identities-missing"><td><code>cawg.ica.verified_identities.missing</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-ica-verified-identities-invalid"><td><code>cawg.ica.verified_identities.invalid</code></td><td class="cat bad">failure</td><td data-label="Section">8.1.5.6</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-algorithm-unsupported"><td><code>cawg.x509.algorithm.unsupported</code></td><td class="cat bad">failure</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-credential-untrusted-spec"><td><code>cawg.x509.credential.untrusted</code></td><td class="cat bad">failure</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-signature-mismatch"><td><code>cawg.x509.signature.mismatch</code></td><td class="cat bad">failure</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-signature-outside-validity"><td><code>cawg.x509.signature.outside_validity</code></td><td class="cat bad">failure</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- /codes:cawg -->
+
+    <section class="faq" id="faq">
+      <h2>Questions</h2>
+      <h3>What does signingCredential.untrusted mean?</h3>
+      <p>The signer's certificate does not lead back to any certificate on the trust lists the validator uses, so the name in it can't be confirmed. The file can still be intact and validly signed: if the other checks pass, the C2PA specification counts such a manifest as Valid, just not Trusted. When it is the only failure, c2paview shows it amber.</p>
+      <h3>What does assertion.dataHash.mismatch mean?</h3>
+      <p>The file's content no longer matches the hash recorded when it was signed: the bytes the signature covers have changed since, by editing, re-saving or damage. c2paview shows it red, as changed after signing.</p>
+      <h3>What is the difference between Valid and Trusted?</h3>
+      <p>In the C2PA specification, a Valid manifest is well-formed and has not been modified since it was signed, its signature validated and was made within the signing certificate's validity period, and that certificate has not been revoked. A Trusted manifest is all of that, and its signing certificate is on a trust list. The C2PA library c2paview uses reports Invalid for anything below Valid.</p>
+    </section>
+
+    <h2 id="sources">Sources</h2>
+    <ul class="src-list">
+      <li>C2PA, <a href="https://spec.c2pa.org/specifications/specifications/2.5/specs/C2PA_Specification.html#validation_codes_annex">C2PA Technical Specification 2.5</a> (October 2026), Appendix D and sections 13.3 and 14.8. © 2026 Coalition for Content Provenance and Authenticity, licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; the code meanings above are quoted from it unchanged.</li>
+      <li>Creator Assertions Working Group, <a href="https://cawg.io/identity/1.3/">Identity Assertion 1.3</a>, DIF Ratified Specification, 17 August 2026</li>
+      <li>Content Authenticity Initiative, <a href="https://github.com/contentauth/c2pa-rs">c2pa-rs</a>: the validation codes it defines and reports</li>
+    </ul>
+
+    <p class="related">More: <a href="/check-if-image-is-ai-generated/">Is this image AI-generated?</a> · <a href="/what-is-c2pa/">What is C2PA?</a> · <a href="/">Check a file</a></p>
+  </article>
+</main>
+
+<footer class="notes">
+  <p class="note">Not affiliated with or endorsed by the C2PA or the Content Authenticity Initiative; C2PA™ and Content
+    Credentials are trademarks of their respective owners, used here only to describe the standard.</p>
+  <p class="note">More free tools at <a href="https://games.adamwoodland.com/">Adam's Arcade</a> · Made by <a href="https://adamwoodland.com/">Adam Woodland</a>. Design, code and content developed with the assistance of AI (Anthropic Claude).</p>
+</footer>
+</body>
+</html>

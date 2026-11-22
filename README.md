@@ -6,13 +6,17 @@ Drop any image, video or audio file and inspect its C2PA Content Credentials - w
 when, with what tool, whether it is AI-generated, and whether it has been altered since signing.
 Free, runs entirely in your browser, no account, no adverts, and the file is never uploaded.
 
+Guides on the site: [How to check if an image is AI-generated](https://c2paview.com/check-if-image-is-ai-generated/),
+[What is C2PA?](https://c2paview.com/what-is-c2pa/) and
+[C2PA validation codes explained](https://c2paview.com/c2pa-validation-codes/).
+
 ## What it does
 
 - Reads the C2PA manifest store from JPEG, PNG, WebP, AVIF, GIF, TIFF, SVG, MP4, MOV, MP3, WAV,
   PDF and `.c2pa` sidecar files.
 - Validates it locally: content hashes, claim signature and certificate chain, via the official
-  [c2pa-web](https://github.com/contentauth/c2pa-js) SDK (`@contentauth/c2pa-web`: the C2PA reference
-  implementation, `c2pa-rs`, compiled to WebAssembly and self-hosted here).
+  [c2pa-web](https://github.com/contentauth/c2pa-js) SDK (`@contentauth/c2pa-web`: the Content Authenticity Initiative's open-source C2PA
+  library, `c2pa-rs`, compiled to WebAssembly and self-hosted here).
 - Shows the story in plain language: signer, signing time, claim generator, producer, the actions
   performed ("opened", "adjusted colour", "AI-generated"), and the ingredient tree with
   thumbnails - plus the raw manifest JSON for the curious.
