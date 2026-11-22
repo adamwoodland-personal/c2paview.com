@@ -41,7 +41,7 @@
         "mainEntityOfPage": "https://c2paview.com/c2pa-validation-codes/",
         "image": "https://c2paview.com/og-validation-codes.png",
         "datePublished": "2026-11-22",
-        "dateModified": "2026-11-22",
+        "dateModified": "2026-11-23",
         "inLanguage": "en",
         "isPartOf": { "@type": "WebSite", "name": "c2paview", "url": "https://c2paview.com/" }
       },
@@ -100,13 +100,13 @@
     <p class="lead">When a validator checks a file's Content Credentials, it reports each check as a status code: a
       success, an informational note or a failure. Version 2.5 of the C2PA specification (October 2026) defines 126 of
       them. Below: the ones you are most likely to meet, in plain words, then every code in the specification's own words.</p>
-    <p class="updated">Updated 22 November 2026</p>
+    <p class="updated">Updated 23 November 2026</p>
     <a class="cta" href="/">Check a file now</a>
 
     <h2 id="colours">How c2paview turns codes into green, amber and red</h2>
     <ul>
       <li><strong class="cat good">Green</strong>: no failure codes, the signature validated
-        (<code>claimSignature.validated</code>), and the signer is on the C2PA trust list or the older interim trust list (<code>signingCredential.trusted</code>, validation state Trusted).</li>
+        (<code>claimSignature.validated</code>), and the signer is on the C2PA trust list or the older interim trust list (<code>signingCredential.trusted</code>, validation state Trusted). A note says when it is the interim list: c2paview checks the file a second time against the official lists alone.</li>
       <li><strong class="cat warn">Amber</strong>: the only failure is <code>signingCredential.untrusted</code>, so the
         file is intact but who signed it can't be confirmed; or the trust lists could not be loaded; or the checks did not
         come back conclusive either way.</li>

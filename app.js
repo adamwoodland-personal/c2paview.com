@@ -21,8 +21,16 @@ const trustReady = (async () => {
     ].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.text(); })));
     trustEnabled = true;
     return {
-      trust: { trustAnchors: `${a1}\n${a2}\n${a3}`, allowedList: allowed, trustConfig: cfg },
-      verify: { verifyTrust: true, remoteManifestFetch: false },
+      all: {
+        trust: { trustAnchors: `${a1}\n${a2}\n${a3}`, allowedList: allowed, trustConfig: cfg },
+        verify: { verifyTrust: true, remoteManifestFetch: false },
+      },
+      // The official C2PA lists alone (same certificate rules): a signer trusted with `all` but not
+      // with this is on the frozen interim list only, which the result then says (see inspect()).
+      official: {
+        trust: { trustAnchors: `${a1}\n${a2}`, trustConfig: cfg },
+        verify: { verifyTrust: true, remoteManifestFetch: false },
+      },
     };
   } catch (e) { return null; }   // offline before first cache: integrity-only
 })();
@@ -30,7 +38,8 @@ const trustReady = (async () => {
 // default, following a URL inside the file): this viewer reads only what is embedded, and the
 // privacy promise must not depend on the CSP blocking the request. Without the lists, trust
 // checking is switched off explicitly, so an intact file reads amber: intact, signer not checked.
-const contextReady = trustReady.then((s) => new Context(s || { verify: { verifyTrust: false, remoteManifestFetch: false } }));
+const contextReady = trustReady.then((s) => new Context(s ? s.all : { verify: { verifyTrust: false, remoteManifestFetch: false } }));
+const officialContextReady = trustReady.then((s) => (s ? new Context(s.official) : null));
 
 // The SDK wants the format; browsers leave file.type empty for some types (and always for .c2pa).
 const EXT_TYPES = {
@@ -451,7 +460,17 @@ function showResult(file, report) {
     }
     banner.appendChild(b);
   } else if (!status.length && signedOk && trustEnabled && trusted) {
-    banner.appendChild(elc('div', 'verdict-msg good', `✓ Content Credentials are present and valid - ${intact}, and the signer is on the C2PA trust lists.`));
+    // Which list vouched for the signer (inspect() checks again against the official lists alone):
+    // the frozen interim CAI list is still trusted, but the CAI asks validators to tell the two apart.
+    const src = report.trustSource;
+    const onList = src === 'interim' ? 'the interim trust list' : src === 'unknown' ? 'a trust list' : 'the C2PA trust lists';
+    const b = elc('div', 'verdict-msg good', `✓ Content Credentials are present and valid - ${intact}, and the signer is on ${onList}.`);
+    if (src === 'interim') {
+      b.appendChild(elc('div', 'trust-note', 'Note: the signer is on the interim trust list, not the official C2PA trust list. The interim list is the Content Authenticity Initiative’s earlier list of known signers, superseded by the C2PA trust list and frozen since 1 January 2026: nothing new is added, and the certificates already on it remain valid.'));
+    } else if (src === 'unknown') {
+      b.appendChild(elc('div', 'trust-note', 'Note: c2paview could not tell whether the signer is on the official C2PA trust list or only on the older interim list.'));
+    }
+    banner.appendChild(b);
   } else if (!status.length && signedOk && !trustEnabled) {
     // Green means the signer is trusted; without the lists that was never checked, so amber.
     banner.appendChild(elc('div', 'verdict-msg warn', `✓ ${Intact} - but the trust lists could not be loaded, so the signer was not checked against them and can’t be verified. Judge the issuer name below as you would an unknown email sender.`));
@@ -509,6 +528,26 @@ async function postMortem(file, banner) {
 // revoked) when the next file is read. `seq` stops a slow read from overwriting a newer one.
 let current = null, seq = 0;
 const release = (r) => { try { Promise.resolve(r && r.free()).catch(() => {}); } catch (e) { /* already freed */ } };
+// The active manifest's signer was reported trusted (the same test the green verdict uses).
+function signerTrusted(store) {
+  const active = store && store.active_manifest;
+  return !!active && resultsOf(store).success.some((s) => s.code === 'signingCredential.trusted' && (s.url || '').includes(`/${active}/`));
+}
+// A trusted signer may be on the official C2PA trust list or only on the frozen interim CAI list:
+// read the file again against the official lists alone. 'official' | 'interim', or 'unknown' if that
+// second read fails. Runs only for trusted results, so a file that can't go green costs no extra read.
+async function officialOrInterim(c2pa, file) {
+  let r = null;
+  try {
+    const official = await officialContextReady;
+    if (!official) return 'unknown';
+    r = await Reader.fromBlob(c2pa, formatOf(file), file, official);
+    const s = r ? await r.manifestStore() : null;
+    return signerTrusted(s) ? 'official' : 'interim';
+  } catch (e) {
+    return 'unknown';
+  } finally { release(r); }
+}
 async function inspect(file) {
   const mine = ++seq;
   $('#result').hidden = false;
@@ -528,9 +567,11 @@ async function inspect(file) {
     reader = await Reader.fromBlob(c2pa, formatOf(file), file, context);   // null: no manifest
     const store = reader ? await reader.manifestStore() : null;
     if (mine !== seq) { release(reader); return; }
+    const trustSource = signerTrusted(store) ? await officialOrInterim(c2pa, file) : undefined;
+    if (mine !== seq) { release(reader); return; }
     current = { reader, urls: [] };
     reader = null;
-    showResult(file, { store, reader: current.reader, urls: current.urls });
+    showResult(file, { store, reader: current.reader, urls: current.urls, trustSource });
   } catch (e) {
     release(reader);
     if (mine === seq) showResult(file, { error: readError(e) });

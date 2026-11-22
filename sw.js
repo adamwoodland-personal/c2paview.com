@@ -7,7 +7,7 @@
 //  - The shell is '/', never '/index.html': that URL 301s to '/' (the canonical-host function), so
 //    a precached copy would be a redirected response, which browsers refuse for a navigation (an
 //    offline /?shared=<id> handoff would fail).
-const CACHE = 'cv-v15';
+const CACHE = 'cv-v16';
 const CORE = [
 	'/',
 	'/styles.css',

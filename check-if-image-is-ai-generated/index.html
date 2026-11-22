@@ -41,7 +41,7 @@
         "mainEntityOfPage": "https://c2paview.com/check-if-image-is-ai-generated/",
         "image": ["https://c2paview.com/og-ai-image-check.png", "https://c2paview.com/img/chatgpt-image-content-credentials.png"],
         "datePublished": "2026-11-22",
-        "dateModified": "2026-11-22",
+        "dateModified": "2026-11-23",
         "inLanguage": "en",
         "isPartOf": { "@type": "WebSite", "name": "c2paview", "url": "https://c2paview.com/" }
       },
@@ -73,7 +73,7 @@
       "name": "Does a green result mean the image is real?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. Green means the Content Credentials are intact, the file has not changed since it was signed, and the signer is on the C2PA trust list or the older interim trust list. If the signer is an AI tool and the record says the image was generated, a green result confirms exactly that."
+        "text": "No. Green means the Content Credentials are intact, the file has not changed since it was signed, and the signer is on the C2PA trust list or the older interim trust list (the result says which). If the signer is an AI tool and the record says the image was generated, a green result confirms exactly that."
       }
     },
     {
@@ -107,7 +107,7 @@
     <h1>Is this image AI-generated? How to check</h1>
     <p class="lead">Many AI tools now mark the images they make, most often in two ways: Content Credentials (C2PA), a signed record
       stored in the file, and SynthID, an invisible watermark. If either mark survived, you can check it in a minute. If neither did, these checks tell you nothing either way.</p>
-    <p class="updated">Updated 22 November 2026</p>
+    <p class="updated">Updated 23 November 2026</p>
     <a class="cta" href="/">Check a file now</a>
 
     <h2 id="quick-check">The quick check</h2>
@@ -123,18 +123,18 @@
 
     <h2 id="examples">What a real result looks like</h2>
     <figure>
-      <img src="/img/chatgpt-image-content-credentials.png" width="756" height="948" loading="lazy"
-        alt="c2paview result for a ChatGPT image: Content Credentials valid and signed by OpenAI; its DALL·E ingredient says Created - DALL·E, fully AI-generated, then a format conversion" />
+      <img src="/img/chatgpt-image-content-credentials.png" width="756" height="1019" loading="lazy"
+        alt="c2paview result for a ChatGPT image: Content Credentials valid, signer on the interim trust list, signed by OpenAI; its DALL·E ingredient says Created - DALL·E, fully AI-generated, then a format conversion" />
       <figcaption>An illustration made with DALL·E in ChatGPT in September 2024 (from
         <a href="https://commons.wikimedia.org/wiki/File:A_human_writer_and_a_creature_with_the_head_and_wings_of_a_crow,_both_sitting_and_typing_on_their_own_laptops,_experiencing_mild_hallucinations_(DALL-E_illustration).webp">Wikimedia Commons</a>,
-        public domain). OpenAI signed it twice: the DALL·E ingredient records "Created - DALL·E · fully AI-generated" and a format conversion, and ChatGPT's own manifest sits on top of it.</figcaption>
+        public domain). OpenAI signed it twice: the DALL·E ingredient records "Created - DALL·E · fully AI-generated" and a format conversion, and ChatGPT's own manifest sits on top of it. Its signer is on the older interim trust list, which the result notes.</figcaption>
     </figure>
     <figure>
-      <img src="/img/microsoft-designer-image-content-credentials.png" width="756" height="492" loading="lazy"
-        alt="c2paview result for an image from Microsoft Designer: Content Credentials valid, signed by Microsoft Corporation, created with Image Creator from Designer, fully AI-generated" />
+      <img src="/img/microsoft-designer-image-content-credentials.png" width="756" height="563" loading="lazy"
+        alt="c2paview result for an image from Microsoft Designer: Content Credentials valid, signer on the interim trust list, signed by Microsoft Corporation, created with Image Creator from Designer, fully AI-generated" />
       <figcaption>An image made with Image Creator in Microsoft Designer in June 2024 (from
         <a href="https://commons.wikimedia.org/wiki/File:AI_tanuki_Japanese_text.jpg">Wikimedia Commons</a>, public
-        domain), signed by Microsoft Corporation and marked fully AI-generated.</figcaption>
+        domain), signed by Microsoft Corporation and marked fully AI-generated; this signer, too, is on the interim trust list.</figcaption>
     </figure>
 
     <h2 id="content-credentials">What Content Credentials can tell you</h2>
@@ -209,7 +209,7 @@
       <h3>Can I tell if a screenshot of an image is AI-generated?</h3>
       <p>Usually not from its Content Credentials: a screenshot is a new file, without the original's record. A SynthID watermark can survive where metadata does not, so Google's SynthID Detector at synthid.com, or the maker's own checker (the Gemini app for Google, openai.com/verify for OpenAI), may still find it.</p>
       <h3>Does a green result mean the image is real?</h3>
-      <p>No. Green means the Content Credentials are intact, the file has not changed since it was signed, and the signer is on the C2PA trust list or the older interim trust list. If the signer is an AI tool and the record says the image was generated, a green result confirms exactly that.</p>
+      <p>No. Green means the Content Credentials are intact, the file has not changed since it was signed, and the signer is on the C2PA trust list or the older interim trust list (the result says which). If the signer is an AI tool and the record says the image was generated, a green result confirms exactly that.</p>
       <h3>Can someone remove the AI label?</h3>
       <p>Yes. Content Credentials are metadata and can be stripped, which is why their absence proves nothing. They cannot be altered without detection: any change to a signed record or to the content it covers shows as a failed check.</p>
       <h3>Is my image uploaded when I check it?</h3>
