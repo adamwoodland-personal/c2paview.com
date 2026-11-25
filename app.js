@@ -20,15 +20,20 @@ const trustReady = (async () => {
       'trust/interim-allowed.sha256.txt', 'trust/store.cfg',
     ].map((u) => fetch(u).then((r) => { if (!r.ok) throw new Error(u); return r.text(); })));
     trustEnabled = true;
+    // Signer anchors and time-stamp authority anchors are separate lists (c2pa-rs 0.92 checks a
+    // time stamp only against `tsaTrust`): the C2PA TSA list goes there, with the interim CAI
+    // anchors in both, as they were before (they include time-stamp roots too).
     return {
       all: {
-        trust: { trustAnchors: `${a1}\n${a2}\n${a3}`, allowedList: allowed, trustConfig: cfg },
+        trust: { trustAnchors: `${a1}\n${a3}`, allowedList: allowed, trustConfig: cfg },
+        tsaTrust: { trustAnchors: `${a2}\n${a3}` },
         verify: { verifyTrust: true, remoteManifestFetch: false },
       },
       // The official C2PA lists alone (same certificate rules): a signer trusted with `all` but not
       // with this is on the frozen interim list only, which the result then says (see inspect()).
       official: {
-        trust: { trustAnchors: `${a1}\n${a2}`, trustConfig: cfg },
+        trust: { trustAnchors: a1, trustConfig: cfg },
+        tsaTrust: { trustAnchors: a2 },
         verify: { verifyTrust: true, remoteManifestFetch: false },
       },
     };

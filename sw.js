@@ -7,7 +7,7 @@
 //  - The shell is '/', never '/index.html': that URL 301s to '/' (the canonical-host function), so
 //    a precached copy would be a redirected response, which browsers refuse for a navigation (an
 //    offline /?shared=<id> handoff would fail).
-const CACHE = 'cv-v16';
+const CACHE = 'cv-v17';
 const CORE = [
 	'/',
 	'/styles.css',
@@ -15,6 +15,14 @@ const CORE = [
 	'/lib/c2pa-web.js',
 	'/lib/c2pa-web-core.js',
 	'/lib/highgain.js',
+	'/lib/c2pa-utilities/assetSize.js',
+	'/lib/c2pa-utilities/caseConversion.js',
+	'/lib/c2pa-utilities/context.js',
+	'/lib/c2pa-utilities/fetchWithRetry.js',
+	'/lib/c2pa-utilities/index.js',
+	'/lib/c2pa-utilities/settings.js',
+	'/lib/c2pa-utilities/signingAlg.js',
+	'/lib/ts-deepmerge.js',
 	'/lib/c2pa_bg.wasm',
 	'/favicon.svg',
 	'/manifest.json',

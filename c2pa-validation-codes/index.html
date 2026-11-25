@@ -41,7 +41,7 @@
         "mainEntityOfPage": "https://c2paview.com/c2pa-validation-codes/",
         "image": "https://c2paview.com/og-validation-codes.png",
         "datePublished": "2026-11-22",
-        "dateModified": "2026-11-23",
+        "dateModified": "2026-11-25",
         "inLanguage": "en",
         "isPartOf": { "@type": "WebSite", "name": "c2paview", "url": "https://c2paview.com/" }
       },
@@ -100,7 +100,7 @@
     <p class="lead">When a validator checks a file's Content Credentials, it reports each check as a status code: a
       success, an informational note or a failure. Version 2.5 of the C2PA specification (October 2026) defines 126 of
       them. Below: the ones you are most likely to meet, in plain words, then every code in the specification's own words.</p>
-    <p class="updated">Updated 23 November 2026</p>
+    <p class="updated">Updated 25 November 2026</p>
     <a class="cta" href="/">Check a file now</a>
 
     <h2 id="colours">How c2paview turns codes into green, amber and red</h2>
@@ -149,7 +149,7 @@
     </div>
 
     <h2 id="success">Success codes (18)</h2>
-    <p>Each meaning is quoted from the C2PA Technical Specification 2.5, Appendix D. "In c2paview" says whether the code's name is in the validator c2paview runs (the C2PA library c2pa-rs, version 0.91.3); a code that isn't cannot appear in a result yet. Every code it reports is in the raw manifest view, and failures other than identity ones are also listed in the verdict.</p>
+    <p>Each meaning is quoted from the C2PA Technical Specification 2.5, Appendix D. "In c2paview" says whether the code's name is in the validator c2paview runs (the C2PA library c2pa-rs, version 0.92.2); a code that isn't cannot appear in a result yet. Every code it reports is in the raw manifest view, and failures other than identity ones are also listed in the verdict.</p>
     <!-- codes:success -->
     <div class="table-wrap">
       <table class="codes">
@@ -278,10 +278,10 @@
           <tr id="claim-multiple"><td><code>claim.multiple</code></td><td>More than one claim box is present in the manifest.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="claimsignature-mismatch-spec"><td><code>claimSignature.mismatch</code></td><td>The claim signature referenced in the claim failed to validate.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="claimsignature-missing"><td><code>claimSignature.missing</code></td><td>The claim signature referenced in the claim cannot be found in its manifest.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
-          <tr id="claimsignature-outsidevalidity"><td><code>claimSignature.outsideValidity</code></td><td>The claim signature referenced in the claim was created outside the validity period of the signing credential.</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="claimsignature-outsidevalidity"><td><code>claimSignature.outsideValidity</code></td><td>The claim signature referenced in the claim was created outside the validity period of the signing credential.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="general-error-spec"><td><code>general.error</code></td><td>A value to be used when there was an error not specifically listed here.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="hasheduri-mismatch"><td><code>hashedURI.mismatch</code></td><td>The hash of a given hashed_uri does not match the corresponding hash of the destination URI’s data</td><td class="cat" data-label="In c2paview">not yet</td></tr>
-          <tr id="hasheduri-missing"><td><code>hashedURI.missing</code></td><td>The data pointed to by a hashed_uri cannot be located</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="hasheduri-missing"><td><code>hashedURI.missing</code></td><td>The data pointed to by a hashed_uri cannot be located</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="ingredient-claimsignature-mismatch"><td><code>ingredient.claimSignature.mismatch</code></td><td>The hash of an embedded C2PA Manifest’s C2PA Claim Signature does not match the hash declared in the hashed_uri value of the claimSignature field in the ingredient assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="ingredient-claimsignature-missing"><td><code>ingredient.claimSignature.missing</code></td><td>The referenced ingredient C2PA Claim Signature was not found.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="ingredient-manifest-mismatch"><td><code>ingredient.manifest.mismatch</code></td><td>The hash of an embedded C2PA Manifest does not match the hash declared in the hashed_uri value of the activeManifest field in the ingredient assertion.</td><td class="cat good" data-label="In c2paview">yes</td></tr>
@@ -342,13 +342,13 @@
           <tr id="cawg-x509-credential-trusted"><td><code>cawg.x509.credential.trusted</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="cawg-x509-signature-validated"><td><code>cawg.x509.signature.validated</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="cawg-x509-signature-inside-validity"><td><code>cawg.x509.signature.inside_validity</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
-          <tr id="cawg-x509-time-stamp-trusted"><td><code>cawg.x509.time_stamp.trusted</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
-          <tr id="cawg-x509-time-stamp-validated"><td><code>cawg.x509.time_stamp.validated</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-trusted"><td><code>cawg.x509.time_stamp.trusted</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-time-stamp-validated"><td><code>cawg.x509.time_stamp.validated</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="cawg-x509-ocsp-not-revoked"><td><code>cawg.x509.ocsp.not_revoked</code></td><td class="cat good">success</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
-          <tr id="cawg-x509-time-stamp-malformed"><td><code>cawg.x509.time_stamp.malformed</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
-          <tr id="cawg-x509-time-stamp-mismatch"><td><code>cawg.x509.time_stamp.mismatch</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
-          <tr id="cawg-x509-time-stamp-untrusted"><td><code>cawg.x509.time_stamp.untrusted</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
-          <tr id="cawg-x509-time-stamp-outside-validity"><td><code>cawg.x509.time_stamp.outside_validity</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
+          <tr id="cawg-x509-time-stamp-malformed"><td><code>cawg.x509.time_stamp.malformed</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-time-stamp-mismatch"><td><code>cawg.x509.time_stamp.mismatch</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-time-stamp-untrusted"><td><code>cawg.x509.time_stamp.untrusted</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
+          <tr id="cawg-x509-time-stamp-outside-validity"><td><code>cawg.x509.time_stamp.outside_validity</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat good" data-label="In c2paview">yes</td></tr>
           <tr id="cawg-x509-time-stamp-credential-invalid"><td><code>cawg.x509.time_stamp.credential_invalid</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
           <tr id="cawg-x509-time-of-signing-inside-validity"><td><code>cawg.x509.time_of_signing.inside_validity</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
           <tr id="cawg-x509-time-of-signing-outside-validity"><td><code>cawg.x509.time_of_signing.outside_validity</code></td><td class="cat">informational</td><td data-label="Section">8.2.2.4</td><td class="cat" data-label="In c2paview">not yet</td></tr>
